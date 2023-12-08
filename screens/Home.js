@@ -1,72 +1,56 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Image } from 'react-native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { useEffect, useState } from 'react';
 import Menu from '../components/menu.js';
+import LeagueRow from '../components/leagueRow.js';
 
 
 export default function Home({navigation}) {
-  const [todayData, setTodayData] = useState(null);
+  const [todayDataLeagues, setTodayDataLeagues] = useState(null);
 
-  async function scraper(url){
+  async function fetchData() {
     console.log('Scraping...');
     try {
-      console.log('try')
-      const { data } = await axios.get(url);
-      const $ = cheerio.load(data);  
-      const matches = $('.L_c6 .L_fH')
+      const { data } = await axios.get(
+        'https://int.soccerway.com/'
+      );
+      const $ = cheerio.load(data);
+      const leagueElements = $('.livescores-comp');
+      const leagueData = [];
+      let i = 0;
 
-      const scrapedData = [];
-
-      matches.each((index, element) => {
-          // Extract data from each row and create an object
-          const rowData = {
-              den: $(element).find('td.-_ft:contains("dnes")').text().trim(),
-              cas: $(element).find('td.-_ft:contains(":")').text().trim(),
-              domaci: $(element).find('.al_ft').text().trim(),
-              hoste: $(element).find('.am_ft').text().trim(),
-              // Add more properties as needed based on your HTML structure
-          };
-
-          // Push the object to the array
-          if (rowData.den != ''){
-            scrapedData.push(rowData);
+      leagueElements.each((index, element) => {
+        if (i < 10) {
+          const league = {
+            name: $(element).find('.comp-name').text(),
+            ligaid: $(element).find('a').attr('href').split('/')[2] + " - " + $(element).find('a').attr('href').split('/')[3],
+            flag: 'https://int.soccerway.com' + $(element).find('.country-flag').attr('src'),
           }
-      });
-
-      // Convert the array of objects to a JSON string
-      const finalData = scrapedData.slice(0, scrapedData.length/2);
-      const jsonData = JSON.stringify(finalData, null, 2);
-      
-      console.log('done')
-      return(jsonData);
+          leagueData.push(league);
+        } 
+        i=i+1;
+      })
+      console.log(leagueData);
+      setTodayDataLeagues(leagueData);
+      console.log('done');
     } catch (error) {
-      console.log('error')
-      return({ error: 'Failed to update positions.' });
+      console.log('error', error);
     }
-  
   }
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await scraper('https://www.sport.cz/sekce/fotbal-premier-league-kalendar-709');
-      setTodayData(JSON.parse(result));
-      console.log(result);
-    }
     fetchData();
-  }, []); 
+  }, []);
 
   return (
     <View style={styles.container}>
       <Menu nav={navigation}/>
-      {/*todayData && todayData.map((item, index) => (
-        <View key={index} style={{width:'100%', borderBottomWidth:'1px', borderBottomColor:'grey', display:'flex', justifyContent:'space-between'}}>
-          <View>
-            <Text style={{color:'white'}}>{item.domaci}</Text>
-            <Text style={{color:'white'}}>{item.hoste}</Text>
-          </View>
-        </View>  
-      ))*/}
+      <ScrollView>
+      {todayDataLeagues && todayDataLeagues.map((item, index) => (
+        <LeagueRow index={index} item={item}></LeagueRow>
+      ))}
+      </ScrollView>
     </View>
   );
 }
