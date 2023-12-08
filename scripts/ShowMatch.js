@@ -1,14 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet} from 'react-native';
+import { TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
 
 const FotbalovyZapas = ({ zapas }) => {
-  return (
-    <View style={styles.container}>
-        <Text style={styles.home_team}>{zapas.domaci}</Text>
-      <Text style={styles.time}>{zapas.cas}</Text>
-      <Text style={styles.away_team}>{zapas.hoste}</Text>
-    </View>
-  );
+    const handleButtonPress = () => {
+        console.log(zapas);
+      };
+    if (zapas.liga == ligaid)
+    {
+        return (
+            <TouchableOpacity style={styles.container} onPress={() => handleButtonPress()}>
+                <Image style={styles.logo} source={{uri: zapas.logo_domaci}}></Image>
+                <Text style={styles.home_team}>{zapas.domaci}</Text>
+                <Text style={styles.time}>{zapas.cas}</Text>
+                <Image style={styles.logo} source={{uri: zapas.logo_hoste}}></Image>
+                <Text style={styles.away_team}>{zapas.hoste}</Text>
+            </TouchableOpacity>
+        );
+    }
 };
 
 const styles = StyleSheet.create({
@@ -33,6 +41,15 @@ const styles = StyleSheet.create({
     paddingLeft: 300,
     paddingTop: 15,
     color: 'white',
+  },
+  score:{
+    paddingLeft: 300,
+    paddingTop: 15,
+    color: 'white',
+  },
+  button: {
+    width: '100%',
+    height: '100%',
   }
 });
 
