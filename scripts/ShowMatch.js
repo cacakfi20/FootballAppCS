@@ -1,19 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, Text, Image, StyleSheet} from 'react-native';
+import { TouchableOpacity, Text, Image, StyleSheet, View} from 'react-native';
 
 const FotbalovyZapas = ({ zapas }) => {
     const handleButtonPress = () => {
         console.log(zapas);
       };
-    if (zapas.liga == ligaid)
+    if (zapas.liga == "england - premier-league")
     {
         return (
             <TouchableOpacity style={styles.container} onPress={() => handleButtonPress()}>
-                <Image style={styles.logo} source={{uri: zapas.logo_domaci}}></Image>
-                <Text style={styles.home_team}>{zapas.domaci}</Text>
+                <View style={{display: 'flex', flexDirection: "row"}}>
+                    <Image style={styles.logo_home} source={{uri: zapas.logo_domaci}}></Image>
+                    <Text style={styles.home_team}>{zapas.domaci}</Text>
+                </View>
                 <Text style={styles.time}>{zapas.cas}</Text>
-                <Image style={styles.logo} source={{uri: zapas.logo_hoste}}></Image>
-                <Text style={styles.away_team}>{zapas.hoste}</Text>
+                <View style={{display: 'flex', flexDirection: "row", height: 40}}>
+                    <Image style={styles.logo_away} source={{uri: zapas.logo_hoste}}></Image>
+                    <Text style={styles.away_team}>{zapas.hoste}</Text>
+                </View>
             </TouchableOpacity>
         );
     }
@@ -25,6 +29,20 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#494949',
   },
+  logo_home:{
+    position: 'absolute',
+    left: 20,
+    width: '10%',
+    height: '80%',
+    top: 20
+  },
+  logo_away:{
+    position: 'absolute',
+    left: 20,
+    width: '10%',
+    height: '100%',
+    top: -5
+},
   home_team: {
     color: 'white',
     paddingTop: 26,

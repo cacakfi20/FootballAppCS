@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { useEffect, useState } from 'react';
-import Menu from './components/menu.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Matches from './screens/Matches.js';

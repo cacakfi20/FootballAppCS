@@ -1,65 +1,54 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import FotbalovyZapas from './scripts/ShowMatch.js';
+import FotbalovyZapas from '../scripts/ShowMatch.js';
 
-export default function Matches(ligid) {
+export default function Matches() {
   const [matches, setMatches] = useState([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      console.log('Scraping...');
-      try {
-        const { data } = await axios.get(
-          'https://int.soccerway.com/'
-        );
-        const $ = cheerio.load(data);
-        const leagueElements = $('.livescores-comp');
-        const matchesElements = $('.livescores-comp .livescore_match');
+  async function fetchData() {
+    console.log('Scraping...');
+    try {
+      const { data } = await axios.get(
+        'https://uk.soccerway.com'
+      );
+      const $ = cheerio.load(data);
+      const matchesElements = $('.livescores-comp .livescore_match');
 
-        const scrapedData = [];
-        const leagueData = [];
+      const scrapedData = [];
 
-        leagueElements.each((index, element) => {
-          const league = {
-            name: $(element).find('.comp-name').text(),
-            ligaid: $(element).find('a').attr('href').split('/')[2] + " - " + $(element).find('a').attr('href').split('/')[3],
-          }
-          leagueData.push(league);
+      matchesElements.each((index, element) => {
+        const match = {
+          link: $(element).find('.matchinfo .teams a').attr('href'),
+          liga: $(element).find('.matchinfo .teams a').attr('href').split('/')[5] + " - " + $(element).find('.matchinfo .teams a').attr('href').split('/')[6],
+          cas: $(element).find('.timebox time').text().trim(),
+          logo_domaci: $(element).find('.matchinfo .teams .team_a .team_name img').attr('src').replace("30x30", "150x150"),
+          domaci: $(element).find('.matchinfo .teams .team_a').text().trim(),
+          skore_domaci: $(element).find('.scores .score_a span.team_score').text().trim(),
+          logo_hoste: $(element).find('.matchinfo .teams .team_b .team_name img').attr('src').replace("30x30", "150x150"),
+          hoste: $(element).find('.matchinfo .teams .team_b').text().trim(),
+          skore_hoste: $(element).find('.scores .score_b span.team_score').text().trim(),
+        };
 
-        })
-
-        console.log(leagueData);
-
-        matchesElements.each((index, element) => {
-          const match = {
-            link: $(element).find('.matchinfo .teams a').attr('href'),
-            liga: $(element).find('.matchinfo .teams a').attr('href').split('/')[5] + " - " + $(element).find('.matchinfo .teams a').attr('href').split('/')[6],
-            cas: $(element).find('.timebox time').text().trim(),
-            logo_domaci: $(element).find('.matchinfo .teams .team_a .team_name img').attr('src'),
-            domaci: $(element).find('.matchinfo .teams .team_a').text().trim(),
-            logo_hoste: $(element).find('.matchinfo .teams .team_b .team_name img').attr('src'),
-            hoste: $(element).find('.matchinfo .teams .team_b').text().trim(),
-          };
-
-          scrapedData.push(match);
+        scrapedData.push(match);
 
 
-        });
+      });
 
-        setMatches(scrapedData);
-        console.log(scrapedData);
-        console.log('done');
-      } catch (error) {
-        console.log('error', error);
-      }
+      setMatches(scrapedData);
+      console.log(scrapedData);
+      console.log('done');
+    } catch (error) {
+      console.log('error', error);
     }
+  }
 
+  useEffect(() => {
     fetchData();
-  }, []); // Empty dependency array ensures the effect runs once on mount
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -69,8 +58,6 @@ export default function Matches(ligid) {
             <FotbalovyZapas key={index} zapas={zapas} />
         ))}
       </ScrollView>
-      <Text>2023/24</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }
