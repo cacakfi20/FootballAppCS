@@ -1,13 +1,19 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import FotbalovyZapas from '../scripts/ShowMatch.js';
+import FootballMatch from '../components/footballMatch.js';
+import Menu from '../components/menu.js';
+import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator } from "react-native";
 
-export default function Matches() {
+export default function Matches(leagueId) {
   const [matches, setMatches] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+
+  const navigation = useNavigation();
 
   async function fetchData() {
     console.log('Scraping...');
@@ -32,14 +38,13 @@ export default function Matches() {
           hoste: $(element).find('.matchinfo .teams .team_b').text().trim(),
           skore_hoste: $(element).find('.scores .score_b span.team_score').text().trim(),
         };
-
+        
         scrapedData.push(match);
-
 
       });
 
       setMatches(scrapedData);
-      console.log(scrapedData);
+      setLoading(false);
       console.log('done');
     } catch (error) {
       console.log('error', error);
@@ -52,12 +57,13 @@ export default function Matches() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Football App CS</Text>
-      <ScrollView style={styles.scrollView}>
-        {matches.map((zapas, index) => (
-            <FotbalovyZapas key={index} zapas={zapas} />
-        ))}
-      </ScrollView>
+        <Menu nav={navigation}/>
+        {isLoading && <ActivityIndicator color={"#fff"} style={{marginVertical:'50%'}}/>}
+        <ScrollView style={styles.scrollView}>
+            {matches.map((zapas, index) => (
+                <FootballMatch leagueId={leagueId} key={index} zapas={zapas} />
+            ))}
+        </ScrollView>
     </View>
   );
 }
