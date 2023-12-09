@@ -1,7 +1,7 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import FotbalovyZapas from '../scripts/ShowMatch.js';
