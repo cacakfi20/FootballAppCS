@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio';
 import { useEffect, useState } from 'react';
 import Menu from '../components/menu.js';
 import LeagueRow from '../components/leagueRow.js';
+import DateBar from '../components/dateBar.js';
 
 
 export default function Home({navigation}) {
@@ -46,11 +47,15 @@ export default function Home({navigation}) {
   return (
     <View style={styles.container}>
       <Menu nav={navigation}/>
-      <ScrollView>
-      {todayDataLeagues && todayDataLeagues.map((item, index) => (
-        <LeagueRow index={index} item={item}></LeagueRow>
-      ))}
-      </ScrollView>
+      <DateBar nav={navigation}/>
+      <View>
+        <Text style={styles.text}>Dnešní zápasy</Text>
+        <ScrollView>
+          {todayDataLeagues && todayDataLeagues.map((item, index) => (
+            <LeagueRow key={index} nav={navigation} index={index} item={item}></LeagueRow>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -60,4 +65,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#100E21',
     height: '100%',
   },
+  text: {
+    color:'white', 
+    textAlign:'center', 
+    marginBottom:'10%', 
+    fontSize:20, 
+    fontWeight:'700'
+  }
 });
