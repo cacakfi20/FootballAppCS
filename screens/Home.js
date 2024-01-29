@@ -14,7 +14,7 @@ export default function Home({navigation}) {
     console.log('Scraping...');
     try {
       const { data } = await axios.get(
-        'https://int.soccerway.com/matches/2023/12/13'
+        'https://int.soccerway.com/matches/2024/01/27'
       );
       const $ = cheerio.load(data);
       const leagueElements = $('.livescores-comp');

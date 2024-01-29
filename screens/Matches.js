@@ -19,7 +19,7 @@ export default function Matches(leagueId) {
     console.log('Scraping...');
     try {
       const { data } = await axios.get(
-        'https://uk.soccerway.com/matches/2023/12/13'
+        'https://uk.soccerway.com/matches/2024/01/27'
       );
       const $ = cheerio.load(data);
       const matchesElements = $('.livescores-comp .livescore_match');
