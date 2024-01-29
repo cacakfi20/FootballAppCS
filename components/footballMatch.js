@@ -5,11 +5,13 @@ const FootballMatch = ({ zapas, leagueId }) => {
     const handleButtonPress = () => {
         console.log(zapas);
       };
-    console.log(leagueId.route.params.leagueId);
+        
     if (zapas.liga == leagueId.route.params.leagueId)
     {
+
       if (zapas.skore_hoste == "-" && zapas.skore_domaci == "-")
       {
+
           return (
               <TouchableOpacity style={styles.container} onPress={() => handleButtonPress()}>
                   <View style={{display: 'flex', flexDirection: "row"}}>

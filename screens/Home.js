@@ -14,7 +14,7 @@ export default function Home({navigation}) {
     console.log('Scraping...');
     try {
       const { data } = await axios.get(
-        'https://int.soccerway.com/'
+        'https://int.soccerway.com/matches/2023/12/13'
       );
       const $ = cheerio.load(data);
       const leagueElements = $('.livescores-comp');
@@ -50,7 +50,7 @@ export default function Home({navigation}) {
       <DateBar nav={navigation}/>
       <View>
         <Text style={styles.text}>Dnešní zápasy</Text>
-        <ScrollView>
+        <ScrollView style={{width: '100%', height:'100%'}}>
           {todayDataLeagues && todayDataLeagues.map((item, index) => (
             <LeagueRow key={index} nav={navigation} index={index} item={item}></LeagueRow>
           ))}
@@ -63,7 +63,6 @@ export default function Home({navigation}) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#100E21',
-    height: '100%',
   },
   text: {
     color:'white', 
