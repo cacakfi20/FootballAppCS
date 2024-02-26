@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 export default function LeagueRow({ index, item, nav }) {
   const handleLeaguePress = () => {
     console.log('League Clicked ' + item.ligaid);
-    nav.navigate('Matches', { leagueId:item.ligaid});
+    nav.navigate('Matches', { leagueId:item.ligaid, leagueName:item.name, leagueFlag:item.flag});
   }
   let borTopW = 0;
   if(index == 0) {

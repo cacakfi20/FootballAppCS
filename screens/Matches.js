@@ -1,13 +1,13 @@
 // App.js
 import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import FootballMatch from '../components/footballMatch.js';
 import Menu from '../components/menu.js';
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator } from "react-native";
+import League from '../components/league.js';
 
 export default function Matches(leagueId) {
   const [matches, setMatches] = useState([]);
@@ -17,9 +17,10 @@ export default function Matches(leagueId) {
 
   async function fetchData() {
     console.log('Scraping...');
+    
     try {
       const { data } = await axios.get(
-        'https://uk.soccerway.com/matches/2024/01/27'
+        'https://int.soccerway.com/'
       );
       const $ = cheerio.load(data);
       const matchesElements = $('.livescores-comp .livescore_match');
@@ -59,9 +60,10 @@ export default function Matches(leagueId) {
     <View style={styles.container}>
         <Menu nav={navigation}/>
         {isLoading && <ActivityIndicator color={"#fff"} style={{marginVertical:'50%'}}/>}
+        <League leagueID={leagueId} nav={navigation}/>
         <ScrollView style={styles.scrollView}>
             {matches.map((zapas, index) => (
-                <FootballMatch leagueId={leagueId} key={index} zapas={zapas} />
+                <FootballMatch leagueId={leagueId} key={index} zapas={zapas} nav={navigation} />
             ))}
         </ScrollView>
     </View>

@@ -1,11 +1,14 @@
 import React from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet, View} from 'react-native';
 
-const FootballMatch = ({ zapas, leagueId }) => {
-    const handleButtonPress = () => {
-        console.log(zapas);
+const FootballMatch = ({ zapas, leagueId, nav }) => {
+    const handleMatchBeforePress = () => {
+        console.log(leagueId);
+        nav.navigate('BeforeMatch', { leagueId:leagueId.route.params.leagueId, leagueName:leagueId.route.params.leagueName, leagueFlag:leagueId.route.params.leagueFlag});
       };
-        
+    const handleMatchPlayingPress = () => {
+      console.log(zapas);
+    }
     if (zapas.liga == leagueId.route.params.leagueId)
     {
 
@@ -13,7 +16,7 @@ const FootballMatch = ({ zapas, leagueId }) => {
       {
 
           return (
-              <TouchableOpacity style={styles.container} onPress={() => handleButtonPress()}>
+              <TouchableOpacity style={styles.container} onPress={() => handleMatchBeforePress()}>
                   <View style={{display: 'flex', flexDirection: "row"}}>
                       <Image style={styles.logo_home} source={{uri: zapas.logo_domaci}}></Image>
                       <Text style={styles.home_team}>{zapas.domaci}</Text>
@@ -28,7 +31,7 @@ const FootballMatch = ({ zapas, leagueId }) => {
       } else 
       {
           return (
-              <TouchableOpacity style={styles.container} onPress={() => handleButtonPress()}>
+              <TouchableOpacity style={styles.container} onPress={() => handleMatchPlayingPress()}>
                   <View style={{display: 'flex', flexDirection: "row"}}>
                       <Image style={styles.logo_home} source={{uri: zapas.logo_domaci}}></Image>
                       <Text style={styles.home_team}>{zapas.domaci}</Text>
@@ -56,14 +59,14 @@ const styles = StyleSheet.create({
   logo_home:{
     position: 'absolute',
     left: 20,
-    width: '10%',
-    height: '80%',
+    width: '9%',
+    height: '78%',
     top: 20
   },
   logo_away:{
     position: 'absolute',
     left: 20,
-    width: '10%',
+    width: '9%',
     height: '100%',
     top: -5
 },
