@@ -20,7 +20,7 @@ export default function Matches(leagueId) {
     
     try {
       const { data } = await axios.get(
-        'https://int.soccerway.com/matches/2024/02/28/'
+        'https://int.soccerway.com/matches/2024/02/25/'
       );
       const $ = cheerio.load(data);
       const matchesElements = $('.livescores-comp .livescore_match');
@@ -44,7 +44,7 @@ export default function Matches(leagueId) {
         scrapedData.push(match);
 
       });
-
+      console.log(scrapedData);
       setMatches(scrapedData);
       setLoading(false);
       console.log('done');

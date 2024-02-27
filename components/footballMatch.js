@@ -3,11 +3,31 @@ import { TouchableOpacity, Text, Image, StyleSheet, View} from 'react-native';
 
 const FootballMatch = ({ zapas, leagueId, nav }) => {
     const handleMatchBeforePress = () => {
-        console.log(zapas);
-        nav.navigate('BeforeMatch', { leagueId:leagueId.route.params.leagueId, leagueName:leagueId.route.params.leagueName, leagueFlag:leagueId.route.params.leagueFlag, logo_domaci:zapas.logo_domaci, logo_hoste:zapas.logo_hoste, domaci:zapas.domaci, hoste:zapas.hoste, cas:zapas.cas,});
+      nav.navigate('BeforeMatch', {
+          leagueId:leagueId.route.params.leagueId, 
+          leagueName:leagueId.route.params.leagueName, 
+          leagueFlag:leagueId.route.params.leagueFlag, 
+          logo_domaci:zapas.logo_domaci, 
+          logo_hoste:zapas.logo_hoste, 
+          domaci:zapas.domaci, 
+          hoste:zapas.hoste, 
+          cas:zapas.cas
+        });
       };
     const handleMatchPlayingPress = () => {
-      console.log(zapas);
+        nav.navigate('PlayedMatch', {
+          leagueId:leagueId.route.params.leagueId,
+          leagueName:leagueId.route.params.leagueName, 
+          leagueFlag:leagueId.route.params.leagueFlag, 
+          logo_domaci:zapas.logo_domaci, 
+          logo_hoste:zapas.logo_hoste, 
+          domaci:zapas.domaci, 
+          hoste:zapas.hoste, 
+          cas:zapas.cas, 
+          skore_domaci:zapas.skore_domaci, 
+          skore_hoste: zapas.skore_hoste,
+          link: zapas.link
+        });
     }
     if (zapas.liga == leagueId.route.params.leagueId)
     {

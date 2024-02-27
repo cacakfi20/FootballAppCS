@@ -1,7 +1,4 @@
 import { StyleSheet, Text, View } from 'react-native';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import { useEffect, useState } from 'react';
 import Menu from '../components/menu.js';
 
 

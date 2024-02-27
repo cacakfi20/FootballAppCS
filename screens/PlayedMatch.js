@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import Menu from '../components/menu.js';
 import League from '../components/league.js';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
-export default function BeforeMatch(item) {
-
+export default function PlayedMatch(item) {
   const navigation = useNavigation();
 
+  const [players, setPlayers] = useState([]);
+  const [isLoading, setLoading] = useState(true);
   const [state, setState] = useState('Přehled zápasu není k dispocizi, utkání ještě nezačalo.');
   const [bold, setBold] = useState(true);
   const [selectedButton, setSelectedButton] = useState('prehled');
@@ -24,6 +27,58 @@ export default function BeforeMatch(item) {
     setBold(true);
     setSelectedButton('sestavy');
   }
+
+  async function fetchData() {
+    console.log('Scraping...');
+
+    try {
+        const { data } = await axios.get('https://int.soccerway.com' + item.route.params.link);
+        const $ = cheerio.load(data);
+        const homePlayers = $('.combined-lineups-container .left tr');
+
+        const scrapedHomeData = [];
+
+        homePlayers.each((index, element) => {
+            const homePlayer = {
+                name: $(element).find('.player a').text().trim(),
+                shirtNumber: $(element).find('.shirtnumber').text().trim(),
+                bookingLink: $(element).find('.bookings img').attr('src'),
+                bookingMinute: $(element).find('.bookings span').text().trim()
+            };
+
+            scrapedHomeData.push(homePlayer);
+
+        });
+        
+        setPlayers(scrapedHomeData);
+
+        const awayPlayers = $('.combined-lineups-container .right tr');
+        const scrapedAwayData = [];
+
+        awayPlayers.each((index, element) => {
+            const awayPlayer = {
+                name: $(element).find('.player a').text().trim(),
+                shirtNumber: $(element).find('.shirtnumber').text().trim(),
+                bookingLink: $(element).find('.bookings img').attr('src'),
+                bookingMinute: $(element).find('.bookings span').text().trim()
+            };
+
+            scrapedAwayData.push(awayPlayer);
+
+        });
+        console.log(scrapedAwayData);
+        setPlayers(scrapedAwayData);
+        setLoading(false);
+        console.log('done');
+    } catch (error) {
+        console.log('error', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
     return (
         <View style={styles.container}>
             <Menu nav={navigation}/>
@@ -35,7 +90,11 @@ export default function BeforeMatch(item) {
               </View>
               <View  style={styles.info_column}>
                 <Text style={styles.time}>{item.route.params.cas}</Text>
-                <Text style={styles.dash}>-</Text>
+                <View style={styles.scoreboard}>
+                    <Text style={styles.home_score}>{item.route.params.skore_domaci}</Text>
+                    <Text style={styles.dash}>-</Text>
+                    <Text style={styles.away_score}>{item.route.params.skore_hoste}</Text>
+                </View>
               </View>
               <View style={styles.away_team_column}>
               <Image style={styles.logo_away} source={{uri: item.route.params.logo_hoste}}></Image>
@@ -93,6 +152,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
+    scoreboard:{
+        dispaly: 'flex',
+        flexDirection: 'row'
+    },
     logo_home:{
       width: '65%',
       height: '40%',
@@ -107,7 +170,6 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 15,
       marginTop: 20,
-      textAlign: 'center',
       marginLeft: 40
     },
     away_team: {
@@ -118,12 +180,28 @@ const styles = StyleSheet.create({
     },
     time:{
       color: '#9E9E9E',
+      position: 'relative',
+      bottom: 30
     },
     dash:{
       color: 'white',
-      fontSize: 100,
+      fontSize: 40,
       paddingBottom: 50,
       fontWeight: 'bold'
+    },
+    home_score:{
+        color: 'white',
+        fontSize: 40,
+        fontWeight: 'bold',
+        position: 'relative',
+        right: 5    
+    },
+    away_score:{
+        color: 'white',
+        fontSize: 40,
+        fontWeight: 'bold',
+        position: 'relative',
+        left: 5
     },
     optionbar:{
       display: 'flex',
