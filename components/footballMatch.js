@@ -3,8 +3,8 @@ import { TouchableOpacity, Text, Image, StyleSheet, View} from 'react-native';
 
 const FootballMatch = ({ zapas, leagueId, nav }) => {
     const handleMatchBeforePress = () => {
-        console.log(leagueId);
-        nav.navigate('BeforeMatch', { leagueId:leagueId.route.params.leagueId, leagueName:leagueId.route.params.leagueName, leagueFlag:leagueId.route.params.leagueFlag});
+        console.log(zapas);
+        nav.navigate('BeforeMatch', { leagueId:leagueId.route.params.leagueId, leagueName:leagueId.route.params.leagueName, leagueFlag:leagueId.route.params.leagueFlag, logo_domaci:zapas.logo_domaci, logo_hoste:zapas.logo_hoste, domaci:zapas.domaci, hoste:zapas.hoste, cas:zapas.cas,});
       };
     const handleMatchPlayingPress = () => {
       console.log(zapas);
@@ -52,7 +52,7 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
 
 const styles = StyleSheet.create({
   container: {
-    height:135,
+    height: 135,
     borderTopWidth: 1,
     borderColor: '#494949',
   },
