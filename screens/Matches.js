@@ -14,14 +14,13 @@ export default function Matches(leagueId) {
   const [isLoading, setLoading] = useState(true);
 
   const navigation = useNavigation();
+  const url = 'https://int.soccerway.com/matches/2024/02/23/';
 
   async function fetchData() {
     console.log('Scraping...');
     
     try {
-      const { data } = await axios.get(
-        'https://int.soccerway.com/matches/2024/02/25/'
-      );
+      const { data } = await axios.get(url);
       const $ = cheerio.load(data);
       const matchesElements = $('.livescores-comp .livescore_match');
 
@@ -44,7 +43,7 @@ export default function Matches(leagueId) {
         scrapedData.push(match);
 
       });
-      console.log(scrapedData);
+
       setMatches(scrapedData);
       setLoading(false);
       console.log('done');

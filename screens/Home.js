@@ -6,33 +6,50 @@ import Menu from '../components/menu.js';
 import LeagueRow from '../components/leagueRow.js';
 import DateBar from '../components/dateBar.js';
 
-
 export default function Home({navigation}) {
   const [todayDataLeagues, setTodayDataLeagues] = useState(null);
-
   async function fetchData() {
     console.log('Scraping...');
     try {
       const { data } = await axios.get(
-        'https://int.soccerway.com/matches/2024/02/25/'
+        'https://int.soccerway.com/matches/2024/02/23/'
       );
       const $ = cheerio.load(data);
       const leagueElements = $('.livescores-comp');
       const leagueData = [];
-      let i = 0;
+
+      const leagueOfIntrest = [
+        'england - premier-league', 
+        'england - fa-cup',
+        'england - championship',
+      //  'england - league-one',
+      //  'england - league-two',
+        'europe - eufa-cup',
+        'europe - uefa-europa-conference-league',
+        'europe - uefa-champions-league',
+        'france - ligue-1', 
+        'germany - bundesliga', 
+        'italy - serie-a', 
+        'spain - primera-division', 
+        'england - league-cup', 
+        'netherlands - eredivisie', 
+        //'czech-republic - czech-liga', 
+        //'czech-republic - cup', 
+        'portugal - portuguese-liga-']
 
       leagueElements.each((index, element) => {
-        if (i < 10) {
+        const leagueid = $(element).find('a').attr('href').split('/')[2] + " - " + $(element).find('a').attr('href').split('/')[3];
+        if (leagueOfIntrest.includes(leagueid.trim()))
+        {
           const league = {
             name: $(element).find('.comp-name').text(),
             ligaid: $(element).find('a').attr('href').split('/')[2] + " - " + $(element).find('a').attr('href').split('/')[3],
             flag: 'https://int.soccerway.com' + $(element).find('.country-flag').attr('src'),
           }
           leagueData.push(league);
-        } 
-        i=i+1;
+          console.log(league.ligaid);
+        }
       })
-      console.log(leagueData);
       setTodayDataLeagues(leagueData);
       console.log('done');
     } catch (error) {

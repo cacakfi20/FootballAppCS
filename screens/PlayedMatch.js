@@ -1,29 +1,31 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import Menu from '../components/menu.js';
 import League from '../components/league.js';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import Player from '../components/player.js';
+
 
 export default function PlayedMatch(item) {
   const navigation = useNavigation();
 
-  const [players, setPlayers] = useState([]);
+  const [homeStartPlayers, setHomeStartPlayers] = useState([]);
+  const [awayStartPlayers, setAwayStartPlayers] = useState([]);
+  const [homeBenchPlayers, setHomeBenchPlayers] = useState([]);
+  const [awayBenchPlayers, setAwayBenchPlayers] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [state, setState] = useState('Přehled zápasu není k dispocizi, utkání ještě nezačalo.');
   const [bold, setBold] = useState(true);
   const [selectedButton, setSelectedButton] = useState('prehled');
 
   const handlePrehledPress = () => {
-    setState('Přehled zápasu není k dispocizi, utkání ještě nezačalo.')
     setBold(true);
     setSelectedButton('prehled')
   }
 
   const handleSestavyPress = () => {
-    setState('Sestavy nejsou k dispocizi, utkání ještě nezačalo.')
     setBold(true);
     setSelectedButton('sestavy');
   }
@@ -34,40 +36,69 @@ export default function PlayedMatch(item) {
     try {
         const { data } = await axios.get('https://int.soccerway.com' + item.route.params.link);
         const $ = cheerio.load(data);
-        const homePlayers = $('.combined-lineups-container .left tr');
+        const homeStartPlayers = $('.combined-lineups-container .left table:not(.substitutions) tr');
 
-        const scrapedHomeData = [];
+        const scrapedHomeStartData = [];
 
-        homePlayers.each((index, element) => {
-            const homePlayer = {
+        homeStartPlayers.each((index, element) => {
+            const homeStartPlayer = {
+                name: $(element).find('.player a').text().trim(),
+                shirtNumber: $(element).find('.shirtnumber').text().trim(),
+                bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
+                bookingMinute: $(element).find('.bookings span').text().trim()
+            };
+
+            scrapedHomeStartData.push(homeStartPlayer);
+
+        });
+        setHomeStartPlayers(scrapedHomeStartData);
+
+        const awayStartPlayers = $('.combined-lineups-container .right table:not(.substitutions) tr');
+        const scrapedAwayStartData = [];
+
+        awayStartPlayers.each((index, element) => {
+            const awayStartPlayer = {
                 name: $(element).find('.player a').text().trim(),
                 shirtNumber: $(element).find('.shirtnumber').text().trim(),
                 bookingLink: $(element).find('.bookings img').attr('src'),
                 bookingMinute: $(element).find('.bookings span').text().trim()
             };
 
-            scrapedHomeData.push(homePlayer);
+            scrapedAwayStartData.push(awayStartPlayer);
 
         });
-        
-        setPlayers(scrapedHomeData);
+        setAwayStartPlayers(scrapedAwayStartData);
 
-        const awayPlayers = $('.combined-lineups-container .right tr');
-        const scrapedAwayData = [];
+        const homeBenchPlayers = $('.combined-lineups-container .left .substitutions tr');
+        const scrapedHomeBenchData = [];
 
-        awayPlayers.each((index, element) => {
-            const awayPlayer = {
-                name: $(element).find('.player a').text().trim(),
-                shirtNumber: $(element).find('.shirtnumber').text().trim(),
-                bookingLink: $(element).find('.bookings img').attr('src'),
-                bookingMinute: $(element).find('.bookings span').text().trim()
-            };
+        homeBenchPlayers.each((index, element) => {
+          const homeBenchPlayer = {
+            name: $(element).find('.player .substitute-in a').text().trim(),
+            shirtNumber: $(element).find('.shirtnumber').text().trim(),
+            bookingLink: $(element).find('.bookings img').attr('src'),
+            bookingMinute: $(element).find('.bookings span').text().trim()
+          };
+          scrapedHomeBenchData.push(homeBenchPlayer);
+        })
 
-            scrapedAwayData.push(awayPlayer);
+        console.log(scrapedHomeBenchData);
+        setHomeBenchPlayers(scrapedHomeBenchData);
 
-        });
-        console.log(scrapedAwayData);
-        setPlayers(scrapedAwayData);
+        const awayBenchPlayers = $('.combined-lineups-container .right .substitutions tr');
+        const scrapedAwayBenchData = [];
+
+        awayBenchPlayers.each((index, element) => {
+          const awayBenchPlayer = {
+            name: $(element).find('.player .substitute-in a').text().trim(),
+            shirtNumber: $(element).find('.shirtnumber').text().trim(),
+            bookingLink: $(element).find('.bookings img').attr('src'),
+            bookingMinute: $(element).find('.bookings span').text().trim()
+          };
+          scrapedAwayBenchData.push(awayBenchPlayer);
+        })
+        setAwayBenchPlayers(scrapedAwayBenchData);
+
         setLoading(false);
         console.log('done');
     } catch (error) {
@@ -84,40 +115,67 @@ export default function PlayedMatch(item) {
             <Menu nav={navigation}/>
             <League leagueID={item} nav={navigation}/>
             <View style={styles.matchInfoContainer}>
-              <View style={styles.home_team_column}>
+                <View style={styles.home_team_column}>
                 <Image style={styles.logo_home} source={{uri: item.route.params.logo_domaci}}></Image>
                 <Text style={styles.home_team}>{item.route.params.domaci}</Text>
-              </View>
-              <View  style={styles.info_column}>
+                </View>
+                <View  style={styles.info_column}>
                 <Text style={styles.time}>{item.route.params.cas}</Text>
                 <View style={styles.scoreboard}>
                     <Text style={styles.home_score}>{item.route.params.skore_domaci}</Text>
                     <Text style={styles.dash}>-</Text>
                     <Text style={styles.away_score}>{item.route.params.skore_hoste}</Text>
                 </View>
-              </View>
-              <View style={styles.away_team_column}>
-              <Image style={styles.logo_away} source={{uri: item.route.params.logo_hoste}}></Image>
+                </View>
+                <View style={styles.away_team_column}>
+                <Image style={styles.logo_away} source={{uri: item.route.params.logo_hoste}}></Image>
                 <Text style={styles.away_team}>{item.route.params.hoste}</Text>
-              </View>
+                </View>
             </View>
             <View style={styles.optionbar}>
-              <TouchableOpacity style={styles.prehled} onPress={() => handlePrehledPress()}>
+                <TouchableOpacity style={styles.prehled} onPress={() => handlePrehledPress()}>
                 <View>
-                  <Text style={[styles.prehled_text, bold && selectedButton === 'prehled' && styles.boldText]}>Přehled</Text>
+                    <Text style={[styles.prehled_text, bold && selectedButton === 'prehled' && styles.boldText]}>Přehled</Text>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.sestavy} onPress={() => handleSestavyPress()}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.sestavy} onPress={() => handleSestavyPress()}>
                 <View>
-                  <Text style={[styles.sestavy_text, bold && selectedButton === 'sestavy' && styles.boldText]}>Sestavy</Text>
+                    <Text style={[styles.sestavy_text, bold && selectedButton === 'sestavy' && styles.boldText]}>Sestavy</Text>
                 </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
             </View>
             <View>
-              <Text style={{color: 'white', fontSize: 20, padding: 20}}>{state}</Text>
+                <ScrollView style={{width: '100%',height: 500, backgroundColor: '#100E21'}}>
+                  <Text style={styles.label}>Základní sestava</Text>
+                  <View style={{ display: 'flex', flexDirection: 'row' }}>
+                      <View style={styles.homeTeam}>
+                        {homeStartPlayers.map((hrac, index) => (
+                            <Player key={index} hrac={hrac} />
+                        ))}
+                      </View>
+                      <View style={styles.awayTeam}>
+                        {awayStartPlayers.map((hrac, index) => (
+                            <Player key={index} hrac={hrac} />
+                        ))}
+                      </View>
+                  </View>
+                  <Text style={styles.label}>Náhradníci</Text>
+                  <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <View style={styles.homeTeam}>
+                          {homeBenchPlayers.map((hrac, index) => (
+                            <Player key={index} hrac={hrac} />
+                          ))}
+                        </View>
+                        <View style={styles.awayTeam}>
+                          {awayBenchPlayers.map((hrac, index) => (
+                            <Player key={index} hrac={hrac} />
+                          ))}
+                        </View>
+                  </View>
+                </ScrollView>
             </View>
         </View>
-      );
+        );
 }
 
 
@@ -128,7 +186,7 @@ const styles = StyleSheet.create({
     },
     container: {
       backgroundColor: '#100E21',
-      height: '100%'
+        height: 750
     },
     matchInfoContainer: {
       alignItems: "center",
@@ -158,12 +216,12 @@ const styles = StyleSheet.create({
     },
     logo_home:{
       width: '65%',
-      height: '40%',
+      height: '45%',
       marginLeft: 40
     },
     logo_away:{
       width: '65%',
-      height: '40%',
+      height: '45%',
       marginRight: 40
   },
     home_team: {
@@ -232,5 +290,18 @@ const styles = StyleSheet.create({
       paddingLeft: 60,
       fontSize: 20,
       color: 'white'
+    },
+    label: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 15
+    },
+    homeTeam:{
+        width: '50%',
+    },
+    awayTeam: {
+        width: '50%'
     }
 });
