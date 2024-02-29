@@ -12,7 +12,7 @@ export default function Home({navigation}) {
     console.log('Scraping...');
     try {
       const { data } = await axios.get(
-        'https://int.soccerway.com/matches/2024/02/23/'
+        'https://int.soccerway.com/matches/2024/02/26/'
       );
       const $ = cheerio.load(data);
       const leagueElements = $('.livescores-comp');
@@ -22,8 +22,6 @@ export default function Home({navigation}) {
         'england - premier-league', 
         'england - fa-cup',
         'england - championship',
-      //  'england - league-one',
-      //  'england - league-two',
         'europe - eufa-cup',
         'europe - uefa-europa-conference-league',
         'europe - uefa-champions-league',
@@ -33,8 +31,6 @@ export default function Home({navigation}) {
         'spain - primera-division', 
         'england - league-cup', 
         'netherlands - eredivisie', 
-        //'czech-republic - czech-liga', 
-        //'czech-republic - cup', 
         'portugal - portuguese-liga-']
 
       leagueElements.each((index, element) => {
@@ -47,7 +43,6 @@ export default function Home({navigation}) {
             flag: 'https://int.soccerway.com' + $(element).find('.country-flag').attr('src'),
           }
           leagueData.push(league);
-          console.log(league.ligaid);
         }
       })
       setTodayDataLeagues(leagueData);
@@ -67,9 +62,9 @@ export default function Home({navigation}) {
       <DateBar nav={navigation}/>
       <View>
         <Text style={styles.text}>Dnešní zápasy</Text>
-        <ScrollView style={{width: '100%', height:'100%'}}>
+        <ScrollView style={{width: '100%', height: 570}}>
           {todayDataLeagues && todayDataLeagues.map((item, index) => (
-            <LeagueRow key={index} nav={navigation} index={index} item={item}></LeagueRow>
+            <LeagueRow key={index} nav={navigation} index={index} item={item}></LeagueRow>          
           ))}
         </ScrollView>
       </View>

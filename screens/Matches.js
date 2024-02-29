@@ -14,7 +14,7 @@ export default function Matches(leagueId) {
   const [isLoading, setLoading] = useState(true);
 
   const navigation = useNavigation();
-  const url = 'https://int.soccerway.com/matches/2024/02/23/';
+  const url = 'https://int.soccerway.com/matches/2024/02/26/';
 
   async function fetchData() {
     console.log('Scraping...');

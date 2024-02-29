@@ -7,6 +7,7 @@ import * as cheerio from 'cheerio';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Player from '../components/player.js';
+import GoalScorer from '../components/goalScorer.js';
 
 
 export default function PlayedMatch(item) {
@@ -16,88 +17,114 @@ export default function PlayedMatch(item) {
   const [awayStartPlayers, setAwayStartPlayers] = useState([]);
   const [homeBenchPlayers, setHomeBenchPlayers] = useState([]);
   const [awayBenchPlayers, setAwayBenchPlayers] = useState([]);
+  const [goalScorer, setGoalScorer] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [bold, setBold] = useState(true);
   const [selectedButton, setSelectedButton] = useState('prehled');
+  var selectedOption = 'prehled';
 
   const handlePrehledPress = () => {
     setBold(true);
-    setSelectedButton('prehled')
+    setSelectedButton('prehled');
+    selectedOption = 'prehled';
+    fetchData();
   }
 
   const handleSestavyPress = () => {
     setBold(true);
     setSelectedButton('sestavy');
+    selectedOption = 'sestavy';
+    fetchData();
   }
 
   async function fetchData() {
     console.log('Scraping...');
-
     try {
         const { data } = await axios.get('https://int.soccerway.com' + item.route.params.link);
         const $ = cheerio.load(data);
-        const homeStartPlayers = $('.combined-lineups-container .left table:not(.substitutions) tr');
+        if (selectedOption == 'prehled')
+        {
+          console.log('prehled');
+          const goalScorers = $('.content .block_match_goals .scorer-info li');
 
-        const scrapedHomeStartData = [];
+          const scrapedGoalScorerData = [];
 
-        homeStartPlayers.each((index, element) => {
-            const homeStartPlayer = {
-                name: $(element).find('.player a').text().trim(),
-                shirtNumber: $(element).find('.shirtnumber').text().trim(),
-                bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
-                bookingMinute: $(element).find('.bookings span').text().trim()
+          goalScorers.each((index, element) => {
+            const goalScorerPlayer = {
+              name: $(element).find('.scorer:not(.assist) a').text().trim(),
+              minute: $(element).find('.minute').text().trim(),
+              image: 'https://int.soccerway.com/media/v2.8.1/img/events/G.png'
+            }
+            scrapedGoalScorerData.push(goalScorerPlayer);
+          })
+          setGoalScorer(scrapedGoalScorerData);
+          console.log(goalScorer);
+        }
+        if (selectedOption == 'sestavy')
+        {
+          console.log('sestavy');
+          const homeStartPlayers = $('.combined-lineups-container .left table:not(.substitutions) tr');
+
+          const scrapedHomeStartData = [];
+
+          homeStartPlayers.each((index, element) => {
+              const homeStartPlayer = {
+                  name: $(element).find('.player a').text().trim(),
+                  shirtNumber: $(element).find('.shirtnumber').text().trim(),
+                  bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings span').attr('src'),
+                  bookingMinute: $(element).find('.bookings span').text().trim()
+              };
+              
+              scrapedHomeStartData.push(homeStartPlayer);
+
+          });
+          setHomeStartPlayers(scrapedHomeStartData);
+
+          const awayStartPlayers = $('.combined-lineups-container .right table:not(.substitutions) tr');
+          const scrapedAwayStartData = [];
+
+          awayStartPlayers.each((index, element) => {
+              const awayStartPlayer = {
+                  name: $(element).find('.player a').text().trim(),
+                  shirtNumber: $(element).find('.shirtnumber').text().trim(),
+                  bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
+                  bookingMinute: $(element).find('.bookings span').text().trim()
+              };
+
+              scrapedAwayStartData.push(awayStartPlayer);
+
+          });
+          setAwayStartPlayers(scrapedAwayStartData);
+
+          const homeBenchPlayers = $('.combined-lineups-container .left .substitutions tr');
+          const scrapedHomeBenchData = [];
+
+          homeBenchPlayers.each((index, element) => {
+            const homeBenchPlayer = {
+              name: $(element).find('.player .substitute-in a').text().trim(),
+              shirtNumber: $(element).find('.shirtnumber').text().trim(),
+              bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
+              bookingMinute: $(element).find('.bookings span').text().trim()
             };
+            scrapedHomeBenchData.push(homeBenchPlayer);
+          })
+          setHomeBenchPlayers(scrapedHomeBenchData);
 
-            scrapedHomeStartData.push(homeStartPlayer);
+          const awayBenchPlayers = $('.combined-lineups-container .right .substitutions tr');
+          const scrapedAwayBenchData = [];
 
-        });
-        setHomeStartPlayers(scrapedHomeStartData);
-
-        const awayStartPlayers = $('.combined-lineups-container .right table:not(.substitutions) tr');
-        const scrapedAwayStartData = [];
-
-        awayStartPlayers.each((index, element) => {
-            const awayStartPlayer = {
-                name: $(element).find('.player a').text().trim(),
-                shirtNumber: $(element).find('.shirtnumber').text().trim(),
-                bookingLink: $(element).find('.bookings img').attr('src'),
-                bookingMinute: $(element).find('.bookings span').text().trim()
+          awayBenchPlayers.each((index, element) => {
+            const awayBenchPlayer = {
+              name: $(element).find('.player .substitute-in a').text().trim(),
+              shirtNumber: $(element).find('.shirtnumber').text().trim(),
+              bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
+              bookingMinute: $(element).find('.bookings span').text().trim()
             };
-
-            scrapedAwayStartData.push(awayStartPlayer);
-
-        });
-        setAwayStartPlayers(scrapedAwayStartData);
-
-        const homeBenchPlayers = $('.combined-lineups-container .left .substitutions tr');
-        const scrapedHomeBenchData = [];
-
-        homeBenchPlayers.each((index, element) => {
-          const homeBenchPlayer = {
-            name: $(element).find('.player .substitute-in a').text().trim(),
-            shirtNumber: $(element).find('.shirtnumber').text().trim(),
-            bookingLink: $(element).find('.bookings img').attr('src'),
-            bookingMinute: $(element).find('.bookings span').text().trim()
-          };
-          scrapedHomeBenchData.push(homeBenchPlayer);
-        })
-
-        console.log(scrapedHomeBenchData);
-        setHomeBenchPlayers(scrapedHomeBenchData);
-
-        const awayBenchPlayers = $('.combined-lineups-container .right .substitutions tr');
-        const scrapedAwayBenchData = [];
-
-        awayBenchPlayers.each((index, element) => {
-          const awayBenchPlayer = {
-            name: $(element).find('.player .substitute-in a').text().trim(),
-            shirtNumber: $(element).find('.shirtnumber').text().trim(),
-            bookingLink: $(element).find('.bookings img').attr('src'),
-            bookingMinute: $(element).find('.bookings span').text().trim()
-          };
-          scrapedAwayBenchData.push(awayBenchPlayer);
-        })
-        setAwayBenchPlayers(scrapedAwayBenchData);
+            scrapedAwayBenchData.push(awayBenchPlayer);
+          })
+          setAwayBenchPlayers(scrapedAwayBenchData);
+        }
+        
 
         setLoading(false);
         console.log('done');
@@ -144,8 +171,16 @@ export default function PlayedMatch(item) {
                 </View>
                 </TouchableOpacity>
             </View>
-            <View>
-                <ScrollView style={{width: '100%',height: 500, backgroundColor: '#100E21'}}>
+            {selectedButton === 'prehled' && (
+              <View id="prehledContent" style={styles.PrehledContent}>
+                {goalScorer.map((strelec, index) => (
+                  <GoalScorer key={index} goalScorer={strelec} />
+                ))}
+              </View>
+            )}
+            {selectedButton === 'sestavy' && (
+              <View id="sestavyContent">
+                <ScrollView horizontal={false} style={{width: '100%', height: 421, backgroundColor: '#100E21'}}>
                   <Text style={styles.label}>Základní sestava</Text>
                   <View style={{ display: 'flex', flexDirection: 'row' }}>
                       <View style={styles.homeTeam}>
@@ -173,7 +208,8 @@ export default function PlayedMatch(item) {
                         </View>
                   </View>
                 </ScrollView>
-            </View>
+              </View>
+            )}
         </View>
         );
 }
@@ -181,7 +217,7 @@ export default function PlayedMatch(item) {
 
 
 const styles = StyleSheet.create({
-    boldText:{
+  boldText:{
       fontWeight: 'bold'
     },
     container: {
@@ -303,5 +339,9 @@ const styles = StyleSheet.create({
     },
     awayTeam: {
         width: '50%'
+    },
+    PrehledContent:{
+      backgroundColor: '#100E21',
+      height: '100%'
     }
 });
