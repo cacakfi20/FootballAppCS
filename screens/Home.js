@@ -8,12 +8,19 @@ import DateBar from '../components/dateBar.js';
 
 export default function Home({navigation}) {
   const [todayDataLeagues, setTodayDataLeagues] = useState(null);
+  let dnes = new Date();
+  let linkMesic = (dnes.getMonth() + 1).toString().padStart(2, '0');
+  let linkDen = (dnes.getDay() - 4).toString().padStart(2, '0');
+  let linkDatum = `${linkMesic}/${linkDen}/`;
+  const url = 'https://int.soccerway.com/matches/2024/' + linkDatum;
+
+  const [selectedUrl, setSelectedUrl] = useState(url);
+
   async function fetchData() {
     console.log('Scraping...');
     try {
-      const { data } = await axios.get(
-        'https://int.soccerway.com/matches/2024/02/26/'
-      );
+      const { data } = await axios.get(selectedUrl);
+      console.log(selectedUrl);
       const $ = cheerio.load(data);
       const leagueElements = $('.livescores-comp');
       const leagueData = [];
@@ -22,16 +29,19 @@ export default function Home({navigation}) {
         'england - premier-league', 
         'england - fa-cup',
         'england - championship',
+        'england - league-cup', 
         'europe - eufa-cup',
         'europe - uefa-europa-conference-league',
         'europe - uefa-champions-league',
         'france - ligue-1', 
+        'france - coupe-de-france',
         'germany - bundesliga', 
         'italy - serie-a', 
         'spain - primera-division', 
-        'england - league-cup', 
+        'spain - copa-del-rey',
         'netherlands - eredivisie', 
-        'portugal - portuguese-liga-']
+        'portugal - portuguese-liga-',
+      ]
 
       leagueElements.each((index, element) => {
         const leagueid = $(element).find('a').attr('href').split('/')[2] + " - " + $(element).find('a').attr('href').split('/')[3];
@@ -54,17 +64,17 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedUrl]);
 
   return (
     <View style={styles.container}>
       <Menu nav={navigation}/>
-      <DateBar nav={navigation}/>
+      <DateBar setSelectedUrl={setSelectedUrl}/>
       <View>
         <Text style={styles.text}>Dnešní zápasy</Text>
         <ScrollView style={{width: '100%', height: 570}}>
           {todayDataLeagues && todayDataLeagues.map((item, index) => (
-            <LeagueRow key={index} nav={navigation} index={index} item={item}></LeagueRow>          
+            <LeagueRow key={index} nav={navigation} index={index} item={item} selectedUrl={selectedUrl}></LeagueRow>          
           ))}
         </ScrollView>
       </View>

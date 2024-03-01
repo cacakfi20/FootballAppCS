@@ -12,15 +12,12 @@ import League from '../components/league.js';
 export default function Matches(leagueId) {
   const [matches, setMatches] = useState([]);
   const [isLoading, setLoading] = useState(true);
-
   const navigation = useNavigation();
-  const url = 'https://int.soccerway.com/matches/2024/02/26/';
-
   async function fetchData() {
     console.log('Scraping...');
     
     try {
-      const { data } = await axios.get(url);
+      const { data } = await axios.get(leagueId.route.params.url);
       const $ = cheerio.load(data);
       const matchesElements = $('.livescores-comp .livescore_match');
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, ScrollView, Image, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
 
@@ -8,14 +8,10 @@ export default function Player({ hrac }) {
         return;
     } else {
         return (
-            <ScrollView horizontal={true} style={styles.content}>
+            <View style={styles.content}>
               <Text style={styles.playerNumber}>{hrac.shirtNumber}</Text>
               <Text style={styles.playerName}>{hrac.name}</Text>
-              <View style={{width: 15, height: 15}}>
-                <Image style={styles.bookingImage} source={{uri: hrac.bookingLink}}></Image>
-              </View>
-              <Text style={styles.bookingMinute}>{hrac.bookingMinute}</Text>
-            </ScrollView>
+            </View>
           );
     }
   }

@@ -58,7 +58,6 @@ export default function PlayedMatch(item) {
             scrapedGoalScorerData.push(goalScorerPlayer);
           })
           setGoalScorer(scrapedGoalScorerData);
-          console.log(goalScorer);
         }
         if (selectedOption == 'sestavy')
         {
