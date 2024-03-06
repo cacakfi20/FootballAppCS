@@ -5,6 +5,7 @@ import Search from './screens/Search.js';
 import Matches from './screens/Matches.js';
 import BeforeMatch from './screens/BeforeMatch.js'
 import PlayedMatch from './screens/PlayedMatch.js'
+import Table from './screens/Table.js'
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,7 @@ export default function App() {
         <Stack.Screen name="Matches" component={Matches} options={{ headerShown: false }}/>
         <Stack.Screen name="BeforeMatch" component={BeforeMatch} options={{ headerShown: false }}/>
         <Stack.Screen name="PlayedMatch" component={PlayedMatch} options={{ headerShown: false}} />
+        <Stack.Screen name="Table" component={Table} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

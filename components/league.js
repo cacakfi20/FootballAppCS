@@ -4,8 +4,7 @@ export default function League({ leagueID ,nav }) {
 
   const handleLeagueNamePress = () => {
     console.log('League pressed');
-    console.log(leagueID.route.params.leagueName);
-    //nav.navigate('Home')
+    nav.navigate('Table', {leagueName: leagueID.route.params.leagueName, leagueFlag: leagueID.route.params.leagueFlag, leagueURL: leagueID.route.params.leagueURL});
   };
 
   return (
@@ -13,10 +12,10 @@ export default function League({ leagueID ,nav }) {
       <TouchableOpacity onPress={handleLeagueNamePress}>
         <View style={{display:'flex', flexDirection:'row', height: 64}}>
               <Image
-                  style={{width: '10%', height: '30%', marginLeft:'5%', marginTop: '5%'}}
-                  //source={{uri: leagueID.route.params.leagueFlag}}
+                  style={{width: '10%', height: '30%', marginLeft:'5%', marginTop: '6.5%'}}
+                  source={{uri: leagueID.route.params.leagueFlag}}
               ></Image>
-              <Text style={{color:'white', marginTop:'5%', marginLeft:'5%', fontSize: 20}}></Text>
+              <Text style={{color:'white', marginTop:'6%', marginLeft:'5%', fontSize: 20}}>{leagueID.route.params.leagueName}</Text>
           </View>
       </TouchableOpacity>
     </View>

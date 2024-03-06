@@ -11,7 +11,8 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           logo_hoste:zapas.logo_hoste, 
           domaci:zapas.domaci, 
           hoste:zapas.hoste, 
-          cas:zapas.cas
+          cas:zapas.cas,
+          leagueURL: leagueId.route.params.leagueURL
         });
       };
     const handleMatchPlayingPress = () => {
@@ -26,7 +27,8 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           cas:zapas.cas, 
           skore_domaci:zapas.skore_domaci, 
           skore_hoste: zapas.skore_hoste,
-          link: zapas.link
+          link: zapas.link,
+          leagueURL: leagueId.route.params.leagueURL
         });
     }
     if (zapas.liga == leagueId.route.params.leagueId)

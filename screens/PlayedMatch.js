@@ -17,7 +17,8 @@ export default function PlayedMatch(item) {
   const [awayStartPlayers, setAwayStartPlayers] = useState([]);
   const [homeBenchPlayers, setHomeBenchPlayers] = useState([]);
   const [awayBenchPlayers, setAwayBenchPlayers] = useState([]);
-  const [goalScorer, setGoalScorer] = useState([]);
+  const [goalHomeScorer, setGoalHomeScorer] = useState([]);
+  const [goalAwayScorer, setGoalAwayScorer] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [bold, setBold] = useState(true);
   const [selectedButton, setSelectedButton] = useState('prehled');
@@ -47,17 +48,29 @@ export default function PlayedMatch(item) {
           console.log('prehled');
           const goalScorers = $('.content .block_match_goals .scorer-info li');
 
-          const scrapedGoalScorerData = [];
+          const scrapedGoalHomeScorerData = [];
+          const scrapedGoalAwayScorerData = [];
 
           goalScorers.each((index, element) => {
-            const goalScorerPlayer = {
-              name: $(element).find('.scorer:not(.assist) a').text().trim(),
-              minute: $(element).find('.minute').text().trim(),
-              image: 'https://int.soccerway.com/media/v2.8.1/img/events/G.png'
+            const goalScorerHomePlayer = {
+              name: $(element).find('.scorer:nth-child(1) > a').text().trim(),
+              assist: $(element).find('.scorer:nth-child(1) span a').text().trim(),
+              minute: $(element).find('.minute:nth-child(2)').text().trim(),
+              image: 'https://int.soccerway.com/media/v2.8.1/img/events/G.png',
+              away: false
             }
-            scrapedGoalScorerData.push(goalScorerPlayer);
+            const goalScorerAwayPlayer = {
+              name: $(element).find('.scorer:nth-child(3) > a').text().trim(),
+              assist: $(element).find('.scorer:nth-child(3) span a').text().trim(),
+              minute: $(element).find('.minute:nth-child(1)').text().trim(),
+              image: 'https://int.soccerway.com/media/v2.8.1/img/events/G.png',
+              away: true
+            }
+            scrapedGoalHomeScorerData.push(goalScorerHomePlayer);
+            scrapedGoalAwayScorerData.push(goalScorerAwayPlayer);
           })
-          setGoalScorer(scrapedGoalScorerData);
+          setGoalHomeScorer(scrapedGoalHomeScorerData);
+          setGoalAwayScorer(scrapedGoalAwayScorerData)
         }
         if (selectedOption == 'sestavy')
         {
@@ -172,14 +185,17 @@ export default function PlayedMatch(item) {
             </View>
             {selectedButton === 'prehled' && (
               <View id="prehledContent" style={styles.PrehledContent}>
-                {goalScorer.map((strelec, index) => (
+                {goalHomeScorer.map((strelec, index) => (
+                  <GoalScorer key={index} goalScorer={strelec} />
+                ))}
+                {goalAwayScorer.map((strelec, index) => (
                   <GoalScorer key={index} goalScorer={strelec} />
                 ))}
               </View>
             )}
             {selectedButton === 'sestavy' && (
               <View id="sestavyContent">
-                <ScrollView horizontal={false} style={{width: '100%', height: 421, backgroundColor: '#100E21'}}>
+                <ScrollView horizontal={false} style={{width: '100%', height: 388, backgroundColor: '#100E21'}}>
                   <Text style={styles.label}>Základní sestava</Text>
                   <View style={{ display: 'flex', flexDirection: 'row' }}>
                       <View style={styles.homeTeam}>
@@ -221,7 +237,7 @@ const styles = StyleSheet.create({
     },
     container: {
       backgroundColor: '#100E21',
-        height: 750
+        height: 825
     },
     matchInfoContainer: {
       alignItems: "center",
@@ -250,12 +266,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     logo_home:{
-      width: '65%',
+      width: '72%',
       height: '45%',
       marginLeft: 40
     },
     logo_away:{
-      width: '65%',
+      width: '72%',
       height: '45%',
       marginRight: 40
   },
@@ -341,6 +357,13 @@ const styles = StyleSheet.create({
     },
     PrehledContent:{
       backgroundColor: '#100E21',
-      height: '100%'
+      height: '100%',
+      display: 'flex',
+    },
+    homeTeamScorers:{
+      width: '100%'
+    },
+    awayTeamScorers:{
+      width: '50%'
     }
 });

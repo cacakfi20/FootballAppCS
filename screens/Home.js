@@ -10,7 +10,7 @@ export default function Home({navigation}) {
   const [todayDataLeagues, setTodayDataLeagues] = useState(null);
   let dnes = new Date();
   let linkMesic = (dnes.getMonth() + 1).toString().padStart(2, '0');
-  let linkDen = (dnes.getDay() - 4).toString().padStart(2, '0');
+  let linkDen = (dnes.getDate()).toString().padStart(2, '0');
   let linkDatum = `${linkMesic}/${linkDen}/`;
   const url = 'https://int.soccerway.com/matches/2024/' + linkDatum;
 
@@ -20,7 +20,6 @@ export default function Home({navigation}) {
     console.log('Scraping...');
     try {
       const { data } = await axios.get(selectedUrl);
-      console.log(selectedUrl);
       const $ = cheerio.load(data);
       const leagueElements = $('.livescores-comp');
       const leagueData = [];
@@ -33,6 +32,7 @@ export default function Home({navigation}) {
         'europe - eufa-cup',
         'europe - uefa-europa-conference-league',
         'europe - uefa-champions-league',
+        'europe - uefa-cup',
         'france - ligue-1', 
         'france - coupe-de-france',
         'germany - bundesliga', 
@@ -51,6 +51,7 @@ export default function Home({navigation}) {
             name: $(element).find('.comp-name').text(),
             ligaid: $(element).find('a').attr('href').split('/')[2] + " - " + $(element).find('a').attr('href').split('/')[3],
             flag: 'https://int.soccerway.com' + $(element).find('.country-flag').attr('src'),
+            leagueURL: 'https://int.soccerway.com' + $(element).find('h2 a').attr('href')
           }
           leagueData.push(league);
         }

@@ -8,7 +8,6 @@ export default function DateBar({ nav ,setSelectedUrl}) {
   const handleDatePress = (item) => {
     const url = 'https://int.soccerway.com/matches/2024/' + item.link;
     setSelectedUrl(url);
-    console.log(url);
   }
 
   function generateDates(days) {
