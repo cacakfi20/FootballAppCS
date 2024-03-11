@@ -15,6 +15,7 @@ export default function Home({navigation}) {
   const url = 'https://int.soccerway.com/matches/2024/' + linkDatum;
 
   const [selectedUrl, setSelectedUrl] = useState(url);
+  navigation.removeListener
 
   async function fetchData() {
     console.log('Scraping...');

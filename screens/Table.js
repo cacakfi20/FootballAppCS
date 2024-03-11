@@ -5,10 +5,14 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import TableTeam from '../components/tableTeam.js'
+import { useNavigation } from '@react-navigation/native';
 
 
-export default function Table(info, navigation) {
+export default function Table(info) {
     const [team, setTeam] = useState([]);
+    const navigation = useNavigation();
+    navigation.removeListener;
+
 
     async function fetchData() {
         console.log('Scraping...');

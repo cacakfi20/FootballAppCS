@@ -13,6 +13,7 @@ export default function Matches(leagueId) {
   const [matches, setMatches] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const navigation = useNavigation();
+  navigation.removeListener
   async function fetchData() {
     console.log('Scraping...');
     

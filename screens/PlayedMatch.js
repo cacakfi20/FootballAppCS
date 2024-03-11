@@ -17,8 +17,7 @@ export default function PlayedMatch(item) {
   const [awayStartPlayers, setAwayStartPlayers] = useState([]);
   const [homeBenchPlayers, setHomeBenchPlayers] = useState([]);
   const [awayBenchPlayers, setAwayBenchPlayers] = useState([]);
-  const [goalHomeScorer, setGoalHomeScorer] = useState([]);
-  const [goalAwayScorer, setGoalAwayScorer] = useState([]);
+  const [goalScorer, setGoalScorers] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [bold, setBold] = useState(true);
   const [selectedButton, setSelectedButton] = useState('prehled');
@@ -48,8 +47,7 @@ export default function PlayedMatch(item) {
           console.log('prehled');
           const goalScorers = $('.content .block_match_goals .scorer-info li');
 
-          const scrapedGoalHomeScorerData = [];
-          const scrapedGoalAwayScorerData = [];
+          const scrapedGoalScorerData = [];
 
           goalScorers.each((index, element) => {
             const goalScorerHomePlayer = {
@@ -66,11 +64,11 @@ export default function PlayedMatch(item) {
               image: 'https://int.soccerway.com/media/v2.8.1/img/events/G.png',
               away: true
             }
-            scrapedGoalHomeScorerData.push(goalScorerHomePlayer);
-            scrapedGoalAwayScorerData.push(goalScorerAwayPlayer);
+            scrapedGoalScorerData.push(goalScorerHomePlayer);
+            scrapedGoalScorerData.push(goalScorerAwayPlayer);
           })
-          setGoalHomeScorer(scrapedGoalHomeScorerData);
-          setGoalAwayScorer(scrapedGoalAwayScorerData)
+          let filteredGoalScorers = scrapedGoalScorerData.filter(goalScorer => goalScorer.name);
+          setGoalScorers(filteredGoalScorers);
         }
         if (selectedOption == 'sestavy')
         {
@@ -185,10 +183,7 @@ export default function PlayedMatch(item) {
             </View>
             {selectedButton === 'prehled' && (
               <View id="prehledContent" style={styles.PrehledContent}>
-                {goalHomeScorer.map((strelec, index) => (
-                  <GoalScorer key={index} goalScorer={strelec} />
-                ))}
-                {goalAwayScorer.map((strelec, index) => (
+                {goalScorer.map((strelec, index) => (
                   <GoalScorer key={index} goalScorer={strelec} />
                 ))}
               </View>

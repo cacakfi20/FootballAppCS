@@ -3,10 +3,10 @@ import React from 'react';
 
 
 export default function GoalScorer({ goalScorer }) {
-    console.log(goalScorer)
+    console.log(goalScorer);
     return (
         <View > 
-            {goalScorer.name !== "" && goalScorer.away == false &&(                
+            {goalScorer.away == false &&(                
             <View style={styles.content}>
                 <Text style={styles.minute}>{goalScorer.minute}</Text>
                 <View>
@@ -16,7 +16,7 @@ export default function GoalScorer({ goalScorer }) {
                 <Text style={styles.assist}>{goalScorer.assist}</Text>
             </View>
             )}
-            {goalScorer.name !== "" && goalScorer.away == true && (
+            {goalScorer.away == true && (
                 <View style={styles.awaycontent}>
                     <Text style={styles.awayassist}>{goalScorer.assist}</Text>
                     <Text style={styles.awayname}>{goalScorer.name}</Text>
@@ -33,17 +33,20 @@ export default function GoalScorer({ goalScorer }) {
     content:{
         display: 'flex',
         flexDirection: 'row',
+        paddingTop: 10,
+        paddingBottom: 10
     },
     name: {
         color: 'white',
         fontSize: 15,
         paddingLeft: 10,
+        marginTop: 2,
         maxWidth: "80%",
     },
     assist:{
         color: '#b7adad',
         fontSize: 10,
-        marginTop: 4,
+        marginTop: 6,
         marginLeft: 5
     },
     image:{
@@ -64,18 +67,20 @@ export default function GoalScorer({ goalScorer }) {
     awaycontent:{
         display: 'flex',
         flexDirection: 'row',
-        marginLeft: 150
+        justifyContent: 'flex-end',
+        padding: 10
     },
     awayname: {
         color: 'white',
         fontSize: 15,
         paddingLeft: 10,
         maxWidth: "80%",
+        marginTop: 2
     },
     awayassist:{
         color: '#b7adad',
-        fontSize: 10,
-        marginTop: 4,
+        fontSize: 12,
+        marginTop: 6,
         marginLeft: 5
     },
     awayimage:{
