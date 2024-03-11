@@ -172,7 +172,7 @@ export default function PlayedMatch(item) {
             <League leagueID={item} nav={navigation}/>
             <View style={styles.matchInfoContainer}>
                 {link.map(({home_link, away_link}, index) => (
-                  <TouchableOpacity onPress={() => handleTeamPress(home_link)} style={styles.home_team_column}>
+                  <TouchableOpacity key={home_link} onPress={() => handleTeamPress(home_link)} style={styles.home_team_column}>
                     <Image style={styles.logo_home} source={{uri: item.route.params.logo_domaci}}></Image>
                     <Text style={styles.home_team}>{item.route.params.domaci}</Text>
                   </TouchableOpacity>
@@ -186,7 +186,7 @@ export default function PlayedMatch(item) {
                   </View>
                 </View>
                 {link.map(({home_link, away_link}, index) => (
-                  <TouchableOpacity onPress={() => handleTeamPress(away_link)} style={styles.away_team_column}>
+                  <TouchableOpacity key={away_link} onPress={() => handleTeamPress(away_link)} style={styles.away_team_column}>
                     <Image style={styles.logo_away} source={{uri: item.route.params.logo_hoste}}></Image>
                     <Text style={styles.away_team}>{item.route.params.hoste}</Text>
                   </TouchableOpacity>
