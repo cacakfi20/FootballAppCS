@@ -12,7 +12,8 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           domaci:zapas.domaci, 
           hoste:zapas.hoste, 
           cas:zapas.cas,
-          leagueURL: leagueId.route.params.leagueURL
+          leagueURL: leagueId.route.params.leagueURL,
+          link: zapas.link
         });
       };
     const handleMatchPlayingPress = () => {

@@ -3,7 +3,6 @@ import React from 'react';
 
 
 export default function GoalScorer({ goalScorer }) {
-    console.log(goalScorer);
     return (
         <View > 
             {goalScorer.away == false &&(                

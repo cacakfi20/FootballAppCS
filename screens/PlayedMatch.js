@@ -18,6 +18,7 @@ export default function PlayedMatch(item) {
   const [homeBenchPlayers, setHomeBenchPlayers] = useState([]);
   const [awayBenchPlayers, setAwayBenchPlayers] = useState([]);
   const [goalScorer, setGoalScorers] = useState([]);
+  const [link, setLink] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [bold, setBold] = useState(true);
   const [selectedButton, setSelectedButton] = useState('prehled');
@@ -37,11 +38,29 @@ export default function PlayedMatch(item) {
     fetchData();
   }
 
+  const handleTeamPress = (link) => {
+    console.log(link);
+  } 
+
   async function fetchData() {
     console.log('Scraping...');
     try {
         const { data } = await axios.get('https://int.soccerway.com' + item.route.params.link);
         const $ = cheerio.load(data);
+
+        const links = $('.content .wrapper')
+
+        const scrapedLink = [];
+    
+        links.each((index, element) => {
+          const teamLink = {
+            home_link: 'https://int.soccerway.com/' + $(element).find('.left .team-logo').attr('href'),
+            away_link: 'https://int.soccerway.com/' + $(element).find('.right .team-logo').attr('href')
+          }
+          scrapedLink.push(teamLink);
+        })
+        setLink(scrapedLink);
+       
         if (selectedOption == 'prehled')
         {
           console.log('prehled');
@@ -152,22 +171,26 @@ export default function PlayedMatch(item) {
             <Menu nav={navigation}/>
             <League leagueID={item} nav={navigation}/>
             <View style={styles.matchInfoContainer}>
-                <View style={styles.home_team_column}>
-                <Image style={styles.logo_home} source={{uri: item.route.params.logo_domaci}}></Image>
-                <Text style={styles.home_team}>{item.route.params.domaci}</Text>
-                </View>
+                {link.map(({home_link, away_link}, index) => (
+                  <TouchableOpacity onPress={() => handleTeamPress(home_link)} style={styles.home_team_column}>
+                    <Image style={styles.logo_home} source={{uri: item.route.params.logo_domaci}}></Image>
+                    <Text style={styles.home_team}>{item.route.params.domaci}</Text>
+                  </TouchableOpacity>
+                ))}
                 <View  style={styles.info_column}>
-                <Text style={styles.time}>{item.route.params.cas}</Text>
-                <View style={styles.scoreboard}>
-                    <Text style={styles.home_score}>{item.route.params.skore_domaci}</Text>
-                    <Text style={styles.dash}>-</Text>
-                    <Text style={styles.away_score}>{item.route.params.skore_hoste}</Text>
+                  <Text style={styles.time}>{item.route.params.cas}</Text>
+                  <View style={styles.scoreboard}>
+                      <Text style={styles.home_score}>{item.route.params.skore_domaci}</Text>
+                      <Text style={styles.dash}>-</Text>
+                      <Text style={styles.away_score}>{item.route.params.skore_hoste}</Text>
+                  </View>
                 </View>
-                </View>
-                <View style={styles.away_team_column}>
-                <Image style={styles.logo_away} source={{uri: item.route.params.logo_hoste}}></Image>
-                <Text style={styles.away_team}>{item.route.params.hoste}</Text>
-                </View>
+                {link.map(({home_link, away_link}, index) => (
+                  <TouchableOpacity onPress={() => handleTeamPress(away_link)} style={styles.away_team_column}>
+                    <Image style={styles.logo_away} source={{uri: item.route.params.logo_hoste}}></Image>
+                    <Text style={styles.away_team}>{item.route.params.hoste}</Text>
+                  </TouchableOpacity>
+                ))}
             </View>
             <View style={styles.optionbar}>
                 <TouchableOpacity style={styles.prehled} onPress={() => handlePrehledPress()}>
@@ -326,7 +349,7 @@ const styles = StyleSheet.create({
     },
     sestavy:{
       backgroundColor: '#2B2940',
-      height: '70',
+      height: 70,
       width: '50%',
       justifyContent: 'center',
       borderLeftWidth: 1,
