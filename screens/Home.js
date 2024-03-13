@@ -15,6 +15,7 @@ export default function Home({navigation}) {
   const url = 'https://int.soccerway.com/matches/2024/' + linkDatum;
 
   const [selectedUrl, setSelectedUrl] = useState(url);
+
   
 
   async function fetchData() {
@@ -74,7 +75,7 @@ export default function Home({navigation}) {
       <Menu nav={navigation}/>
       <DateBar setSelectedUrl={setSelectedUrl}/>
       <View>
-        <Text style={styles.text}>Dnešní zápasy</Text>
+        <Text style={styles.text}>Zápasy</Text>
         <ScrollView style={{width: '100%', height: 570}}>
           {todayDataLeagues && todayDataLeagues.map((item, index) => (
             <LeagueRow key={index} nav={navigation} index={index} item={item} selectedUrl={selectedUrl}></LeagueRow>          
@@ -88,6 +89,7 @@ export default function Home({navigation}) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#100E21',
+    height: '100%'
   },
   text: {
     color:'white', 

@@ -37,14 +37,19 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
 
       if (zapas.skore_hoste == "-" && zapas.skore_domaci == "-")
       {
-
+        // NEHRAJE SE!
           return (
               <TouchableOpacity style={styles.container} onPress={() => handleMatchBeforePress()}>
                   <View style={{display: 'flex', flexDirection: "row"}}>
                       <Image style={styles.logo_home} source={{uri: zapas.logo_domaci}}></Image>
                       <Text style={styles.home_team}>{zapas.domaci}</Text>
                   </View>
-                  <Text style={styles.time}>{zapas.cas}</Text>
+                  {zapas.pstp === "" && (
+                    <Text style={styles.time}>{zapas.cas}</Text>
+                  )}
+                  {zapas.pstp !== "" && (
+                    <Text style={styles.time}>{zapas.pstp}</Text>
+                  )}
                   <View style={{display: 'flex', flexDirection: "row", height: 35}}>
                       <Image style={styles.logo_away} source={{uri: zapas.logo_hoste}}></Image>
                       <Text style={styles.away_team}>{zapas.hoste}</Text>
@@ -53,6 +58,7 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           );
       } else 
       {
+        // HRAJE SE!
           return (
               <TouchableOpacity style={styles.container} onPress={() => handleMatchPlayingPress()}>
                   <View style={{display: 'flex', flexDirection: "row"}}>

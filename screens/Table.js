@@ -28,11 +28,15 @@ export default function Table(info) {
                 const teamTable = {
                     position: $(element).find('.rank').text().trim(),
                     name: $(element).find('.team a').attr('title'),
-                    points: $(element).find('.points').text().trim()
+                    points: $(element).find('.points').text().trim(),
+                    link: 'https://int.soccerway.com/' + $(element).find('.team a').attr('href'),
+                    logo: 'https://secure.cache.images.core.optasports.com/soccer/teams/150x150/' + $(element).find('.team a').attr('href').split('/')[4] + '.png',
+                    mp: $(element).find('.mp').text().trim()
                 }
                 scrapedTeamData.push(teamTable);
             });
             setTeam(scrapedTeamData);
+            console.log(scrapedTeamData)
         } catch (error) {
             console.log('error', error);
         }
@@ -57,6 +61,7 @@ export default function Table(info) {
       <View style={{display: 'flex', flexDirection: 'row', marginBottom: 10}}>
         <Text style={{color: 'white', marginLeft: 15, fontSize: 16}}>#</Text>
         <Text style={{color: 'white', flex: 1, marginLeft: 15, fontSize: 16}}>Team</Text>
+        <Text style={{color: 'white', fontSize: 16, marginRight: 31}}>Z</Text>
         <Text style={{color: 'white', fontSize: 16, marginRight: 23}}>P</Text>
       </View>
       <ScrollView>

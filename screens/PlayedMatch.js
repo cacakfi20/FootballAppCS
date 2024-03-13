@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import Player from '../components/player.js';
 import GoalScorer from '../components/goalScorer.js';
+import { ActivityIndicator } from "react-native";
 
 
 export default function PlayedMatch(item) {
@@ -171,6 +172,7 @@ export default function PlayedMatch(item) {
             <Menu nav={navigation}/>
             <League leagueID={item} nav={navigation}/>
             <View style={styles.matchInfoContainer}>
+            {isLoading && <ActivityIndicator color={"#fff"} style={{marginVertical:'50%'}}/>}
                 {link.map(({home_link, away_link}, index) => (
                   <TouchableOpacity key={home_link} onPress={() => handleTeamPress(home_link)} style={styles.home_team_column}>
                     <Image style={styles.logo_home} source={{uri: item.route.params.logo_domaci}}></Image>

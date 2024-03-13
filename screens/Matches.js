@@ -36,12 +36,14 @@ export default function Matches(leagueId) {
           hoste: $(element).find('.matchinfo .teams .team_b').text().trim(),
           skore_hoste: $(element).find('.scores .score_b span.team_score').text().trim(),
           minuta: $(element).find('.timebox .match_status').text().trim(),
+          pstp: $(element).find('.timebox .match_status abbr').text().trim()
         };
         
         scrapedData.push(match);
 
       });
 
+      console.log(scrapedData)
       setMatches(scrapedData);
       setLoading(false);
       console.log('done');
@@ -57,8 +59,8 @@ export default function Matches(leagueId) {
   return (
     <View style={styles.container}>
         <Menu nav={navigation}/>
-        {isLoading && <ActivityIndicator color={"#fff"} style={{marginVertical:'50%'}}/>}
         <League leagueID={leagueId} nav={navigation}/>
+        {isLoading && <ActivityIndicator color={"#fff"} style={{marginVertical:'50%'}}/>}
         <ScrollView style={styles.scrollView}>
             {matches.map((zapas, index) => (
                 <FootballMatch leagueId={leagueId} key={index} zapas={zapas} nav={navigation} />

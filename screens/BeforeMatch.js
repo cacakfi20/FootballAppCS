@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import React, { useEffect } from 'react'
+import { ActivityIndicator } from 'react-native';
 
 
 export default function BeforeMatch(item) {
@@ -69,6 +70,7 @@ export default function BeforeMatch(item) {
             <Menu nav={navigation}/>
             <League leagueID={item} nav={navigation}/>
             <View style={styles.matchInfoContainer}>
+            {isLoading && <ActivityIndicator color={"#fff"} style={{marginVertical:'50%'}}/>}
               {link.map(({home_link, away_link}, index) => (
                   <TouchableOpacity key={home_link} onPress={() => handleTeamPress(home_link)} style={styles.home_team_column}>
                     <Image style={styles.logo_home} source={{uri: item.route.params.logo_domaci}}></Image>
