@@ -102,9 +102,9 @@ export default function PlayedMatch(item) {
                   name: $(element).find('.player a').text().trim(),
                   shirtNumber: $(element).find('.shirtnumber').text().trim(),
                   bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings span').attr('src'),
-                  bookingMinute: $(element).find('.bookings span').text().trim()
+                  bookingMinute: $(element).find('.bookings span').text().trim(),
+                  flag: $(element).find('.player a').attr('class')
               };
-              
               scrapedHomeStartData.push(homeStartPlayer);
 
           });
@@ -118,7 +118,8 @@ export default function PlayedMatch(item) {
                   name: $(element).find('.player a').text().trim(),
                   shirtNumber: $(element).find('.shirtnumber').text().trim(),
                   bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
-                  bookingMinute: $(element).find('.bookings span').text().trim()
+                  bookingMinute: $(element).find('.bookings span').text().trim(),
+                  flag: $(element).find('.player a').attr('class')
               };
 
               scrapedAwayStartData.push(awayStartPlayer);
@@ -134,7 +135,8 @@ export default function PlayedMatch(item) {
               name: $(element).find('.player .substitute-in a').text().trim(),
               shirtNumber: $(element).find('.shirtnumber').text().trim(),
               bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
-              bookingMinute: $(element).find('.bookings span').text().trim()
+              bookingMinute: $(element).find('.bookings span').text().trim(),
+              flag: $(element).find('.player a').attr('class')
             };
             scrapedHomeBenchData.push(homeBenchPlayer);
           })
@@ -148,7 +150,8 @@ export default function PlayedMatch(item) {
               name: $(element).find('.player .substitute-in a').text().trim(),
               shirtNumber: $(element).find('.shirtnumber').text().trim(),
               bookingLink: 'https://int.soccerway.com' + $(element).find('.bookings img').attr('src'),
-              bookingMinute: $(element).find('.bookings span').text().trim()
+              bookingMinute: $(element).find('.bookings span').text().trim(),
+              flag: $(element).find('.player a').attr('class')
             };
             scrapedAwayBenchData.push(awayBenchPlayer);
           })

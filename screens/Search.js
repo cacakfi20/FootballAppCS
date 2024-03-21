@@ -43,9 +43,11 @@ export default function Search({navigation}) {
                 name: $(element).find('> a').text().trim(),
                 nation: $(element).find('> span').text().trim(),
                 link: 'https://int.soccerway.com/' + $(element).find('> a').attr('href'),
+                image: 'https://secure.cache.images.core.optasports.com/soccer/teams/150x150/' + $(element).find(' > a').attr('href').split('/')[4] + '.png'
             }
             scrapedTeamData.push(teamTable);
         });
+        console.log(scrapedTeamData);
         setTeam(scrapedTeamData);
         console.log('done')
     } catch (error) {
@@ -78,6 +80,7 @@ export default function Search({navigation}) {
       <ScrollView>
         {team.map((tym, index) => (
             <TouchableOpacity onPress={() => handleTeamPress(tym.link)} key={index} style={styles.teamView}>
+              <Image style={{width: 35, height: 35, marginTop: 15}} source={{uri: tym.image}}></Image>
               <Text style={styles.teamName}>{tym.name}</Text>
               <Text style={styles.teamNation}>{tym.nation}</Text>
             </TouchableOpacity>
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
       color: '#b7adad',
       FontSize: 15,
       alignSelf:'flex-end',
-      marginBottom: 3,
+      marginBottom: 6,
       marginLeft: 10
     },
     teamView:{

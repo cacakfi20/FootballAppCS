@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,Image } from 'react-native';
 import React from 'react';
 
 
@@ -7,9 +7,11 @@ export default function Player({ hrac }) {
     {
         return;
     } else {
+        console.log(hrac.flag)
         return (
             <View style={styles.content}>
               <Text style={styles.playerNumber}>{hrac.shirtNumber}</Text>
+              <Image style={{width: 23, height: 20}} source={{uri: 'https://int.soccerway.com/media/v2.8.1/img/flags/24x24/plain/' + hrac.flag.split(' ')[2].replace("_16_left", "") + '.png'}}></Image>
               <Text style={styles.playerName}>{hrac.name}</Text>
             </View>
           );
@@ -37,7 +39,7 @@ export default function Player({ hrac }) {
     playerNumber:{
         color: 'white',
         fontSize: 15,
-        maxWidth: '80%'
+        width: 30
     },
     bookingImage:{
         width: '100%',
