@@ -28,6 +28,7 @@ export default function Home({navigation}) {
       const leagueData = [];
 
       const leagueOfIntrest = [
+        'world - friendlies',
         'england - premier-league', 
         'england - fa-cup',
         'england - championship',
