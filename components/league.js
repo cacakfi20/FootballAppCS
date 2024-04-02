@@ -6,7 +6,7 @@ export default function League({ leagueID ,nav }) {
     console.log('League pressed');
     nav.navigate('Table', {leagueName: leagueID.route.params.leagueName, leagueFlag: leagueID.route.params.leagueFlag, leagueURL: leagueID.route.params.leagueURL});
   };
-
+  console.log(leagueID);
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleLeagueNamePress}>

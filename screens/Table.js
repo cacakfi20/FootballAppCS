@@ -36,7 +36,6 @@ export default function Table(info) {
                 scrapedTeamData.push(teamTable);
             });
             setTeam(scrapedTeamData);
-            console.log(scrapedTeamData)
         } catch (error) {
             console.log('error', error);
         }
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
     },
     image:{
         width: 100,
-        height: 50
+        height: 55
     },
     name: {
         color: 'white',
