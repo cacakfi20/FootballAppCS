@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, Image, StyleSheet, View} from 'react-native';
 
 const FootballMatch = ({ zapas, leagueId, nav }) => {
     const handleMatchBeforePress = () => {
-      nav.navigate('BeforeMatch', {
+      nav.push('BeforeMatch', {
           leagueId:leagueId.route.params.leagueId, 
           leagueName:leagueId.route.params.leagueName, 
           leagueFlag:leagueId.route.params.leagueFlag, 
@@ -17,7 +17,7 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
         });
       };
     const handleMatchPlayingPress = () => {
-        nav.navigate('PlayedMatch', {
+        nav.push('PlayedMatch', {
           leagueId:leagueId.route.params.leagueId,
           leagueName:leagueId.route.params.leagueName, 
           leagueFlag:leagueId.route.params.leagueFlag, 

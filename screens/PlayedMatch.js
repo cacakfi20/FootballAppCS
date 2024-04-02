@@ -41,9 +41,7 @@ export default function PlayedMatch(item) {
   }
 
   const handleTeamPress = (link, itemky) => {
-    console.log('asdasdasdsa')
-    console.log(itemky);
-    navigation.navigate('Team', link)
+    navigation.push('Team', link)
   } 
 
   async function fetchData() {

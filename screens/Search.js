@@ -15,17 +15,12 @@ export default function Search({navigation}) {
 
   const handleLogoPress = () => {
     console.log('Logo Clicked');
-    navigation.navigate('Home')
+    navigation.push('Home')
   };
 
   const handleTeamPress = (url) => {
-    console.log(url);
+    navigation.push('Team', url);
   };
-
-  const handleSearchPress = () => {
-    console.log('Search Clicked');
-  };
-  
 
   async function fetchData() {
     console.log('Scraping...');

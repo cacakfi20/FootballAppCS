@@ -1,11 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, Image, View } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
-const handleTeamPress = (link) => {
-    console.log(link)
-}
 
 export default function tableTeam({ tym }) {
+    const nav = useNavigation();
+
+    const handleTeamPress = (link) => {
+        nav.push('Team', link)
+    }
     return (
         <TouchableOpacity onPress={() => handleTeamPress(tym.link)} style={styles.content}>
             <Text style={styles.position}>{tym.position}.</Text>

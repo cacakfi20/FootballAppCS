@@ -10,7 +10,7 @@ import { ActivityIndicator } from 'react-native';
 
 
 export default function BeforeMatch(item) {
-
+  console.log(item);
   const navigation = useNavigation();
   const [link, setLink] = useState([]);
   const [state, setState] = useState('Přehled zápasu není k dispocizi, utkání ještě nezačalo.');
@@ -33,7 +33,7 @@ export default function BeforeMatch(item) {
   
   const handleTeamPress = (link) => {
     console.log(link);
-    navigation.navigate('Team', link)
+    navigation.push('Team', link)
   } 
   async function fetchData() {
     console.log('Scraping...');

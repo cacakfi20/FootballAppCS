@@ -7,7 +7,6 @@ export default function Player({ hrac }) {
     {
         return;
     } else {
-        console.log(hrac.flag)
         return (
             <View style={styles.content}>
               <Text style={styles.playerNumber}>{hrac.shirtNumber}</Text>

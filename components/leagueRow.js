@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 export default function LeagueRow({ index, item, nav, selectedUrl }) {
   const handleLeaguePress = () => {
-    nav.navigate('Matches', { leagueId:item.ligaid, leagueName:item.name, leagueFlag:item.flag, url:selectedUrl, leagueURL: item.leagueURL });
+    nav.push('Matches', { leagueId:item.ligaid, leagueName:item.name, leagueFlag:item.flag, url:selectedUrl, leagueURL: item.leagueURL });
   }
   let borTopW = 0;
   if(index == 0) {

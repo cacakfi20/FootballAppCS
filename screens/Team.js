@@ -7,6 +7,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 
 export default function Team(leagueLink) {
+    console.log(leagueLink);
     const navigation = useNavigation()
     const [finishedMatches, setFinishedMatches] = useState([]);
     const [upcommingMatches, setUpcommmingMatches] = useState([]);
@@ -14,6 +15,60 @@ export default function Team(leagueLink) {
     const [team, setTeam] = useState([]);
     const [table, setTable] = useState([]);
     const [current, setCurrent] = useState('Výsledky')
+    const [bold, setBold] = useState(true)
+
+    const handleMatchBeforePress = (zapas) => {
+        console.log(zapas)
+        navigation.push('BeforeMatch', {
+            leagueId: zapas.link.split('/')[5] + '-' + zapas.link.split('/')[6],
+            leagueName: zapas.leagueName,
+            leagueFlag: 'https://int.soccerway.com/media/v2.8.1/img/flags/24x24/plain/' + zapas.link.split('/')[5] + '.png',
+            logo_domaci: zapas.domaci_logo,
+            logo_hoste: zapas.hoste_logo,
+            domaci: zapas.domaci,
+            hoste: zapas.hoste,
+            cas: zapas.cas,
+            leagueURL: 'https://int.soccerway.com/national' + '/' + zapas.link.split('/')[5] + '/' + zapas.link.split('/')[6],
+            link: zapas.link
+        })
+    }
+
+    const handlePlayedMatchPress = (zapas) => {
+        console.log(zapas)
+        navigation.push('PlayedMatch', {
+            leagueId: zapas.link.split('/')[5] + '-' + zapas.link.split('/')[6],
+            leagueName: zapas.leagueName,
+            leagueFlag: 'https://int.soccerway.com/media/v2.8.1/img/flags/24x24/plain/' + zapas.link.split('/')[5] + '.png',
+            logo_domaci: zapas.domaci_logo,
+            logo_hoste: zapas.hoste_logo, 
+            domaci:zapas.domaci, 
+            hoste:zapas.hoste, 
+            cas:zapas.cas, 
+            skore_domaci:zapas.domaci_skore, 
+            skore_hoste: zapas.hoste_skore,
+            link: zapas.link,
+            leagueURL: 'https://int.soccerway.com/national' + '/' + zapas.link.split('/')[5] + '/' + zapas.link.split('/')[6],
+            nav: navigation
+        })
+    }
+
+    const handleVysledkyPress = () => {
+        setCurrent('Výsledky');
+        setBold(true);
+    }
+
+    const handleProgramPress = () => {
+        setCurrent('Program');
+        setBold(true);
+    }
+    const handleTabulkaPress = () => {
+        setCurrent('Tabulka');
+        setBold(true);
+    }
+    const handleSoupiskaPress = () => {
+        setCurrent('Soupiska');
+        setBold(true);
+    }
 
     async function scrapeSquad() {
         console.log('Scraping squad...')
@@ -32,7 +87,7 @@ export default function Team(leagueLink) {
     }
 
     async function scrapeTable() {
-        console.log('Scraping squad...')
+        console.log('Scraping squad..')
 
         try {   
             const link = leagueLink.route.params;
@@ -48,7 +103,7 @@ export default function Team(leagueLink) {
     }
 
     async function scrapeTeamInfo() {
-        console.log('Scraping squad...')
+        console.log('Scraping squad.')
 
         try {   
             const link = leagueLink.route.params;
@@ -64,7 +119,7 @@ export default function Team(leagueLink) {
     }
 
     async function fetchFinishedData() {
-        console.log('Scraping...');
+        console.log('Scraping');
         
         try {
             const finishedLink = leagueLink.route.params+'matches/';
@@ -95,7 +150,10 @@ export default function Team(leagueLink) {
                     class: $(element).attr('class').trim(),
                     position: $(element).find('.rank').text().trim(),
                     name: $(element).find('.team').text().trim(),
-                    points: $(element).find('.points').text().trim()
+                    points: $(element).find('.points').text().trim(),
+                    mp: $(element).find('.mp').text().trim(),
+                    link: 'https://int.soccerway.com/' + $(element).find('.team a').attr('href'),
+                    logo: 'https://secure.cache.images.core.optasports.com/soccer/teams/150x150/' + $(element).find('.team a').attr('href').split('/')[4] + '.png',
                 }
                 console.log(info)
                 table.push(info)
@@ -133,8 +191,10 @@ export default function Team(leagueLink) {
                         domaci: $(element).find('.team-a a').text().trim(),
                         hoste: $(element).find('.team-b a').text().trim(),
                         domaci_logo: logo_domaci,
+                        leagueName: $(element).find('.competition a').attr('title'),
                         hoste_logo: logo_hoste,
                         cas: score,
+                        link: $(element).find('.score-time a').attr('href')
                     };
                     scrapedUpData.push(match);
                 } else {
@@ -151,13 +211,15 @@ export default function Team(leagueLink) {
                         hoste: $(element).find('.team-b a').text().trim(),
                         domaci_logo: logo_domaci,
                         hoste_logo: logo_hoste,
+                        leagueName: $(element).find('.competition a').attr('title'),
                         domaci_skore: score_arr[0],
-                        hoste_skore:score_arr[1]
+                        hoste_skore:score_arr[1],
+                        link: $(element).find('.score a').attr('href')
                     };
                     scrapedData.push(match);
                 }
             });
-            setFinishedMatches(scrapedData);
+            setFinishedMatches([...scrapedData].reverse());
             setUpcommmingMatches(scrapedUpData)
             console.log('done');
         } catch (error) {
@@ -168,41 +230,42 @@ export default function Team(leagueLink) {
       useEffect(() => {
             fetchFinishedData();
       }, []);
-    if(current == 'Výsledky') {
-        return (
-            <View style={styles.container}>
-                <Menu nav={navigation}/>
-                {team[0] &&(
-                    <View style={{height:'15%', backgroundColor:'#2B2940'}}>
-                        <Image style={{top:20, position:'absolute', width: '25%',height: '78%'}} source={{uri: team[0].logo}}></Image>
-                        <Text style={{color:'white', fontSize:25, textAlign:'center', top:60}}>{team[0].name}</Text> 
-                    </View>
-                )}
-                <View style={styles.submenu}>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Výsledky')}>
-                        <View>
-                            <Text style={styles.text}>Výsledky</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Program')}>
-                        <View>
-                            <Text style={styles.text}>Program</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Tabulka')}>
-                        <View>
-                            <Text style={styles.text}>Tabulka</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Soupiska')}>
-                        <View>
-                            <Text style={styles.text}>Soupiska</Text>
-                        </View>
-                    </TouchableOpacity>
+      console.log(bold, current);
+    return (
+        <View style={styles.container}>
+            <Menu nav={navigation}/>
+            {team[0] &&(
+                <View style={{height:'15%', backgroundColor:'#2B2940'}}>
+                    <Image style={{top:35, left: 20, position:'absolute', width: '15%',height: '50%'}} source={{uri: team[0].logo}}></Image>
+                    <Text style={{color:'white', fontSize:25, textAlign:'center', top:50, fontWeight: 'bold', left: 20}}>{team[0].name}</Text> 
                 </View>
+            )}
+            <View style={styles.submenu}>
+                <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => handleVysledkyPress() }>
+                    <View>
+                        <Text style={[styles.text, bold && current === 'Výsledky' && styles.boldText]}>Výsledky</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => handleProgramPress()}>
+                    <View>
+                        <Text style={[styles.text, bold && current === 'Program' && styles.boldText]}>Program</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => handleTabulkaPress()}>
+                    <View>
+                        <Text style={[styles.text, bold && current === 'Tabulka' && styles.boldText]}>Tabulka</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => handleSoupiskaPress()}>
+                    <View>
+                        <Text style={[styles.text, bold && current === 'Soupiska' && styles.boldText]}>Soupiska</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            {current === 'Výsledky' && (
                 <ScrollView style={styles.scrollView}>
                     {finishedMatches.map((zapas, index) => (
-                        <TouchableOpacity key={index} style={matchesStyle.container}>
+                        <TouchableOpacity key={index} style={matchesStyle.container} onPress={() => handlePlayedMatchPress(zapas)}>
                             <View style={{display: 'flex', flexDirection: "row"}}>
                                 <Image style={matchesStyle.logo_home} source={{uri: zapas.domaci_logo}}></Image>
                                 <Text style={matchesStyle.home_team}>{zapas.domaci}</Text>
@@ -221,44 +284,11 @@ export default function Team(leagueLink) {
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
-            </View>
-        )
-    }
-    if(current == 'Program') {
-        return (
-            <View style={styles.container}>
-                <Menu nav={navigation}/>
-                {team[0] &&(
-                    <View style={{height:'15%', backgroundColor:'#2B2940'}}>
-                        <Image style={{top:20, position:'absolute', width: '25%',height: '78%'}} source={{uri: team[0].logo}}></Image>
-                        <Text style={{color:'white', fontSize:25, textAlign:'center', top:60}}>{team[0].name}</Text> 
-                    </View>
-                )}
-                <View style={styles.submenu}>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Výsledky')}>
-                        <View>
-                            <Text style={styles.text}>Výsledky</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Program')}>
-                        <View>
-                            <Text style={styles.text}>Program</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Tabulka')}> 
-                        <View>
-                            <Text style={styles.text}>Tabulka</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Soupiska')}>
-                        <View>
-                            <Text style={styles.text}>Soupiska</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+            )}
+            {current === 'Program' && (
                 <ScrollView style={styles.scrollView}>
                     {upcommingMatches.map((zapas, index) => (
-                        <TouchableOpacity key={index} style={matchesStyle.container} onPress={() => handleMatchBeforePress()}>
+                        <TouchableOpacity key={index} style={matchesStyle.container} onPress={() => handleMatchBeforePress(zapas)}>
                             <View style={{display: 'flex', flexDirection: "row"}}>
                                 <Image style={matchesStyle.logo_home} source={{uri: zapas.domaci_logo}}></Image>
                                 <Text style={matchesStyle.home_team}>{zapas.domaci}</Text>
@@ -271,83 +301,23 @@ export default function Team(leagueLink) {
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
-            </View>
-        )
-    }
-    if(current == 'Tabulka') {
-        return (
-            <View style={styles.container}>
-                <Menu nav={navigation}/>
-                {team[0] &&(
-                    <View style={{height:'15%', backgroundColor:'#2B2940'}}>
-                        <Image style={{top:20, position:'absolute', width: '25%',height: '78%'}} source={{uri: team[0].logo}}></Image>
-                        <Text style={{color:'white', fontSize:25, textAlign:'center', top:60}}>{team[0].name}</Text> 
-                    </View>
-                )}
-                <View style={styles.submenu}>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Výsledky')}>
-                        <View>
-                            <Text style={styles.text}>Výsledky</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Program')}>
-                        <View>
-                            <Text style={styles.text}>Program</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Tabulka')}> 
-                        <View>
-                            <Text style={styles.text}>Tabulka</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Soupiska')}>
-                        <View>
-                            <Text style={styles.text}>Soupiska</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+            )}
+            {current === 'Tabulka' && (
                 <ScrollView style={styles.scrollView}>
+                    <View style={{display: 'flex', flexDirection: 'row', marginBottom: 10, marginTop: 10}}>
+                        <Text style={{color: 'white', marginLeft: 15, fontSize: 16}}>#</Text>
+                        <Text style={{color: 'white', flex: 1, marginLeft: 15, fontSize: 16}}>Team</Text>
+                        <Text style={{color: 'white', fontSize: 16, marginRight: 31}}>Z</Text>
+                        <Text style={{color: 'white', fontSize: 16, marginRight: 23}}>P</Text>
+                    </View>
                     {table.map((t, index) => (
                         <View style={t.class.includes('highlight') ? {backgroundColor: '#2B2940'} : {}}>
                             <TableTeam key={index} tym={t} />
                         </View>
                     ))}
                 </ScrollView>
-            </View>
-        )
-    }
-    if(current == 'Soupiska') {
-        return (
-            <View style={styles.container}>
-                <Menu nav={navigation}/>
-                {team[0] &&(
-                    <View style={{height:'15%', backgroundColor:'#2B2940'}}>
-                        <Image style={{top:20, position:'absolute', width: '25%',height: '78%'}} source={{uri: team[0].logo}}></Image>
-                        <Text style={{color:'white', fontSize:25, textAlign:'center', top:60}}>{team[0].name}</Text> 
-                    </View>
-                )}
-                <View style={styles.submenu}>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Výsledky')}>
-                        <View>
-                            <Text style={styles.text}>Výsledky</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Program')}>
-                        <View>
-                            <Text style={styles.text}>Program</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Tabulka')}> 
-                        <View>
-                            <Text style={styles.text}>Tabulka</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{width:'25%', paddingTop:'5%', paddingBottom:'5%'}} onPress={() => setCurrent('Soupiska')}>
-                        <View>
-                            <Text style={styles.text}>Soupiska</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+            )}
+            {current === 'Soupiska' && (
                 <ScrollView style={styles.scrollView}>
                     {players.map((player, index) => (
                         <View key={index} style={{width:'100%', borderBottomColor:'grey', borderBottomWidth:'1', paddingTop:'5%', paddingBottom:'5%', paddingLeft:'5%', display:'flex'}}>
@@ -363,9 +333,9 @@ export default function Team(leagueLink) {
                         </View>
                     ))}
                 </ScrollView>
-            </View>
-        )
-    }
+            )}
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -388,6 +358,9 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         borderBottomWidth:'1px',
         borderBottomColor:'grey'
+    },
+    boldText:{
+        fontWeight: 'bold',
     }
   });
 
