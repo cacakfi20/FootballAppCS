@@ -29,9 +29,10 @@ export default function BeforeMatch(item) {
     setBold(true);
     setSelectedButton('sestavy');
   }
-
+  
   const handleTeamPress = (link) => {
     console.log(link);
+    navigation.navigate('Team', link)
   } 
   async function fetchData() {
     console.log('Scraping...');

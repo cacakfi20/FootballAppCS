@@ -13,7 +13,7 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           hoste:zapas.hoste, 
           cas:zapas.cas,
           leagueURL: leagueId.route.params.leagueURL,
-          link: zapas.link
+          link: zapas.link,
         });
       };
     const handleMatchPlayingPress = () => {
@@ -29,7 +29,8 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           skore_domaci:zapas.skore_domaci, 
           skore_hoste: zapas.skore_hoste,
           link: zapas.link,
-          leagueURL: leagueId.route.params.leagueURL
+          leagueURL: leagueId.route.params.leagueURL,
+          nav: nav
         });
     }
     if (zapas.liga == leagueId.route.params.leagueId)

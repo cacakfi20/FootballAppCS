@@ -11,6 +11,7 @@ import GoalScorer from '../components/goalScorer.js';
 
 
 export default function PlayedMatch(item) {
+  const itemky = item
   const navigation = useNavigation();
 
   const [homeStartPlayers, setHomeStartPlayers] = useState([]);
@@ -38,8 +39,10 @@ export default function PlayedMatch(item) {
     fetchData();
   }
 
-  const handleTeamPress = (link) => {
-    console.log(link);
+  const handleTeamPress = (link, itemky) => {
+    console.log('asdasdasdsa')
+    console.log(itemky);
+    navigation.navigate('Team', link)
   } 
 
   async function fetchData() {
