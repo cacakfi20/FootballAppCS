@@ -13,12 +13,14 @@ export default function DateBar({ nav ,setSelectedUrl}) {
   function generateDates(days) {
     let seznam = [];
     let dnes = new Date();
+    dnes.setHours(0, 0, 0,  0); 
 
     for (let i = days - 1; i >= 0; i--) {
       let novyDen = new Date(dnes.getTime() - i * 24 * 60 * 60 * 1000);
-      let denVTydnu = dnyVTydnu[novyDen.getDay()];
+      novyDen.setHours(0, 0, 0, 0);
+      let denVTydnu = dnes.getTime() === novyDen.getTime() ? "DNES" : dnyVTydnu[novyDen.getDay()];
       let den = novyDen.getDate();
-      let mesic = novyDen.getMonth() + 1; // Měsíce začínají od 0
+      let mesic = novyDen.getMonth() + 1;
       let datum = `${den}.${mesic}.`;
       let linkMesic = (novyDen.getMonth() + 1).toString().padStart(2, '0');
       let linkDen = den.toString().padStart(2, '0');
@@ -26,11 +28,12 @@ export default function DateBar({ nav ,setSelectedUrl}) {
       seznam.push({ datum: datum, day: denVTydnu, link: linkDatum});
     }
 
-    for (let i = 0; i < days; i++) {
+    for (let i = 1; i < days; i++) {
       let novyDen = new Date(dnes.getTime() + i * 24 * 60 * 60 * 1000);
-      let denVTydnu = dnyVTydnu[novyDen.getDay()];
+      novyDen.setHours(0, 0, 0, 0);
+      let denVTydnu = dnes.getTime() === novyDen.getTime() ? "DNES" : dnyVTydnu[novyDen.getDay()];
       let den = novyDen.getDate();
-      let mesic = novyDen.getMonth() + 1; // Měsíce začínají od 0
+      let mesic = novyDen.getMonth() + 1;
       let datum = `${den}.${mesic}.`;
       let linkMesic = (novyDen.getMonth() + 1).toString().padStart(2, '0');
       let linkDen = den.toString().padStart(2, '0');
@@ -40,19 +43,18 @@ export default function DateBar({ nav ,setSelectedUrl}) {
     return seznam;
   }
 
-  let days = 5;
+  let days = 8;
   let dateList = generateDates(days);
 
- // date = item.day + ' ' + item.datum;
-  //today = dnes.getDate() + ' ' + get.getMonth();
 
   return (
     <View style={{height:'8%', marginBottom:'7%'}}>
     <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1}}>
       {dateList &&
         dateList.map((item, index) => (
-          <TouchableOpacity onPress={() => handleDatePress(item)} key={index} style={{height:'100%', flex: 1, aspectRatio: 1, paddingTop: '4%', borderColor: '#494949', borderWidth: 1, borderLeftWidth: 0 }}>
-            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10, fontWeight: '500' }}>{item.datum + ' ' + item.day}</Text>
+          <TouchableOpacity onPress={() => handleDatePress(item)} key={index} style={{height:'100%', flex: 1, aspectRatio: 1, paddingTop: '2%', borderColor: '#494949', borderWidth: 1, borderLeftWidth: 0 }}>
+            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10, fontWeight: '500' }}>{item.day}</Text>
+            <Text style={{ color: 'white', textAlign: 'center', fontSize: 10, fontWeight: '500' }}>{item.datum}</Text>
           </TouchableOpacity>
         ))}
     </ScrollView>

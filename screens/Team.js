@@ -235,9 +235,9 @@ export default function Team(leagueLink) {
         <View style={styles.container}>
             <Menu nav={navigation}/>
             {team[0] &&(
-                <View style={{height:'15%', backgroundColor:'#2B2940'}}>
-                    <Image style={{top:35, left: 20, position:'absolute', width: '15%',height: '50%'}} source={{uri: team[0].logo}}></Image>
-                    <Text style={{color:'white', fontSize:25, textAlign:'center', top:50, fontWeight: 'bold', left: 20}}>{team[0].name}</Text> 
+                <View style={{height:'15%', backgroundColor:'#2B2940', display: 'flex', flexDirection: 'row'}}>
+                    <Image style={{marginTop: 30, marginLeft: 20, width: '15%',height: '50%'}} source={{uri: team[0].logo}}></Image>
+                    <Text style={{color:'white', fontSize:25, textAlign:'center', marginLeft: 10, marginTop:35, fontWeight: 'bold', width: '50%',}}>{team[0].name}</Text> 
                 </View>
             )}
             <View style={styles.submenu}>
