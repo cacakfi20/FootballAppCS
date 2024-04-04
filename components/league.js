@@ -4,7 +4,6 @@ export default function League({ leagueID ,nav }) {
 
   const handleLeagueNamePress = () => {
     console.log('League pressed');
-    console.log(leagueID.route.params.leagueName, leagueID.route.params.leagueFlag, leagueID.route.params.leagueURL)
     nav.push('Table', {leagueName: leagueID.route.params.leagueName, leagueFlag: leagueID.route.params.leagueFlag, leagueURL: leagueID.route.params.leagueURL});
   };
   console.log(leagueID);

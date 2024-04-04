@@ -12,7 +12,6 @@ import { ActivityIndicator } from "react-native";
 
 
 export default function PlayedMatch(item) {
-  const itemky = item
   const navigation = useNavigation();
 
   const [homeStartPlayers, setHomeStartPlayers] = useState([]);
@@ -40,7 +39,7 @@ export default function PlayedMatch(item) {
     fetchData();
   }
 
-  const handleTeamPress = (link, itemky) => {
+  const handleTeamPress = (link) => {
     navigation.push('Team', link)
   } 
 

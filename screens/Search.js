@@ -42,7 +42,6 @@ export default function Search({navigation}) {
             }
             scrapedTeamData.push(teamTable);
         });
-        console.log(scrapedTeamData);
         setTeam(scrapedTeamData);
         console.log('done')
     } catch (error) {
@@ -106,7 +105,6 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       height: 45,
       width: '75%',
-      fontSize: 18,
       marginTop: 20,
       marginRight: 20,
       paddingLeft: 8
@@ -119,7 +117,7 @@ const styles = StyleSheet.create({
     },
     teamNation:{
       color: '#b7adad',
-      FontSize: 15,
+      fontSize: 15,
       alignSelf:'flex-end',
       marginBottom: 6,
       marginLeft: 10

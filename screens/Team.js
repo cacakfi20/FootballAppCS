@@ -5,9 +5,13 @@ import Menu from '../components/menu'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import SquadPlayerG from '../components/squadPlayerG';
+import SquadPlayerD from '../components/squadPlayerD';
+import SquadPlayerA from '../components/squadPlayerA';
+import SquadPlayerM from '../components/squadPlayerM';
+
 
 export default function Team(leagueLink) {
-    console.log(leagueLink);
     const navigation = useNavigation()
     const [finishedMatches, setFinishedMatches] = useState([]);
     const [upcommingMatches, setUpcommmingMatches] = useState([]);
@@ -18,11 +22,10 @@ export default function Team(leagueLink) {
     const [bold, setBold] = useState(true)
 
     const handleMatchBeforePress = (zapas) => {
-        console.log(zapas)
         navigation.push('BeforeMatch', {
             leagueId: zapas.link.split('/')[5] + '-' + zapas.link.split('/')[6],
             leagueName: zapas.leagueName,
-            leagueFlag: 'https://int.soccerway.com/media/v2.8.1/img/flags/24x24/plain/' + zapas.link.split('/')[5] + '.png',
+            LeagueFlag: 'https://int.soccerway.com/media/v2.8.1/img/flags/24x24/plain/' + zapas.link.split('/')[5] + '.png',
             logo_domaci: zapas.domaci_logo,
             logo_hoste: zapas.hoste_logo,
             domaci: zapas.domaci,
@@ -34,7 +37,6 @@ export default function Team(leagueLink) {
     }
 
     const handlePlayedMatchPress = (zapas) => {
-        console.log(zapas)
         navigation.push('PlayedMatch', {
             leagueId: zapas.link.split('/')[5] + '-' + zapas.link.split('/')[6],
             leagueName: zapas.leagueName,
@@ -48,7 +50,6 @@ export default function Team(leagueLink) {
             skore_hoste: zapas.hoste_skore,
             link: zapas.link,
             leagueURL: 'https://int.soccerway.com/national' + '/' + zapas.link.split('/')[5] + '/' + zapas.link.split('/')[6],
-            nav: navigation
         })
     }
 
@@ -61,10 +62,12 @@ export default function Team(leagueLink) {
         setCurrent('Program');
         setBold(true);
     }
+
     const handleTabulkaPress = () => {
         setCurrent('Tabulka');
         setBold(true);
     }
+
     const handleSoupiskaPress = () => {
         setCurrent('Soupiska');
         setBold(true);
@@ -75,9 +78,9 @@ export default function Team(leagueLink) {
 
         try {   
             const link = leagueLink.route.params;
-            const { data } = await axios.get(link)
+            const { data } = await axios.get(link + 'squad/')
             const $ = cheerio.load(data)
-            const squadElements = $('.squad-container .squad tbody tr td div')
+            const squadElements = $('.squad-container table tbody > tr')
             return squadElements;
 
         } catch (error) {
@@ -155,15 +158,17 @@ export default function Team(leagueLink) {
                     link: 'https://int.soccerway.com/' + $(element).find('.team a').attr('href'),
                     logo: 'https://secure.cache.images.core.optasports.com/soccer/teams/150x150/' + $(element).find('.team a').attr('href').split('/')[4] + '.png',
                 }
-                console.log(info)
                 table.push(info)
             })
             setTable(table)
 
             squadElements.each((index, element) => {
                 const team = {
-                    flags: $(element).find('span').attr('class'),
-                    players: $(element).find('a').text().trim()
+                    flags: $(element).find('.flag span').attr('class'),
+                    players: $(element).find('.name a').text().trim(),
+                    position: $(element).find('.position').text().trim(),
+                    number: $(element).find('.shirtnumber').text().trim(),
+                    age: $(element).find('.age').text().trim()
                 }
                 if (team.players && team.flags) {
                     squad.push(team)
@@ -230,13 +235,12 @@ export default function Team(leagueLink) {
       useEffect(() => {
             fetchFinishedData();
       }, []);
-      console.log(bold, current);
     return (
         <View style={styles.container}>
             <Menu nav={navigation}/>
             {team[0] &&(
                 <View style={{height:'15%', backgroundColor:'#2B2940', display: 'flex', flexDirection: 'row'}}>
-                    <Image style={{marginTop: 30, marginLeft: 20, width: '15%',height: '50%'}} source={{uri: team[0].logo}}></Image>
+                    <Image style={{marginTop: 30, marginLeft: 20, width: '16%',height: '50%'}} source={{uri: team[0].logo}}></Image>
                     <Text style={{color:'white', fontSize:25, textAlign:'center', marginLeft: 10, marginTop:35, fontWeight: 'bold', width: '50%',}}>{team[0].name}</Text> 
                 </View>
             )}
@@ -306,32 +310,48 @@ export default function Team(leagueLink) {
                 <ScrollView style={styles.scrollView}>
                     <View style={{display: 'flex', flexDirection: 'row', marginBottom: 10, marginTop: 10}}>
                         <Text style={{color: 'white', marginLeft: 15, fontSize: 16}}>#</Text>
-                        <Text style={{color: 'white', flex: 1, marginLeft: 15, fontSize: 16}}>Team</Text>
+                        <Text style={{color: 'white', flex: 1, marginLeft: 55, fontSize: 16}}>Tým</Text>
                         <Text style={{color: 'white', fontSize: 16, marginRight: 31}}>Z</Text>
-                        <Text style={{color: 'white', fontSize: 16, marginRight: 23}}>P</Text>
+                        <Text style={{color: 'white', fontSize: 16, marginRight: 23}}>B</Text>
                     </View>
                     {table.map((t, index) => (
-                        <View style={t.class.includes('highlight') ? {backgroundColor: '#2B2940'} : {}}>
+                        <View key={index} style={t.class.includes('highlight') ? {backgroundColor: '#2B2940'} : {}}>
                             <TableTeam key={index} tym={t} />
                         </View>
                     ))}
                 </ScrollView>
             )}
-            {current === 'Soupiska' && (
+            {current === 'Soupiska' && (              
                 <ScrollView style={styles.scrollView}>
-                    {players.map((player, index) => (
-                        <View key={index} style={{width:'100%', borderBottomColor:'grey', borderBottomWidth:'1', paddingTop:'5%', paddingBottom:'5%', paddingLeft:'5%', display:'flex'}}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}> 
-                                <Image 
-                                    style={{ width: 23, height: 20, marginRight: 10 }} // Added marginRight for spacing
-                                    source={{ uri: 'https://int.soccerway.com/media/v2.8.1/img/flags/24x24/plain/' + player.flags.split(' ')[2].replace("_16_right", "") + '.png' }}
-                                />
-                                <Text style={{ color: 'white', fontSize: 20 }}>
-                                    {player.players}
-                                </Text>
-                            </View>
-                        </View>
-                    ))}
+                    <View style={{display: 'flex', flexDirection: 'row', marginBottom: 10, marginTop: 10}}>
+                        <Text style={{color: 'white', marginLeft: 15, fontSize: 16}}>#</Text>
+                        <Text style={{color: 'white', flex: 1, marginLeft: 50, fontSize: 16}}>Jméno</Text>
+                        <Text style={{color: 'white', fontSize: 16, marginRight: 19}}>Věk</Text>
+                    </View>
+                    <View style={{marginBottom: 15}}>
+                        <Text style={{color: 'white', margin: 10, fontSize: 20, fontWeight: 'bold'}}>Brankáři</Text>
+                        {players.map((player, index) => (
+                            <SquadPlayerG key={index} player={player}></SquadPlayerG>
+                        ))}
+                    </View>
+                    <View style={{marginBottom: 15}}>
+                        <Text style={{color: 'white', margin: 10, fontSize: 20, fontWeight: 'bold'}}>Obránci</Text>
+                        {players.map((player, index) => (
+                            <SquadPlayerD key={index} player={player}></SquadPlayerD>
+                        ))}
+                    </View>
+                    <View style={{marginBottom: 15}}>
+                        <Text style={{color: 'white', margin: 10, fontSize: 20, fontWeight: 'bold'}}>Záložníci</Text>
+                        {players.map((player, index) => (
+                            <SquadPlayerM key={index} player={player}></SquadPlayerM>
+                        ))}
+                    </View>
+                    <View>
+                        <Text style={{color: 'white', margin: 10, fontSize: 20, fontWeight: 'bold'}}>Útočníci</Text>
+                        {players.map((player, index) => (
+                            <SquadPlayerA key={index} player={player}></SquadPlayerA>
+                        ))}
+                    </View>
                 </ScrollView>
             )}
         </View>

@@ -59,9 +59,9 @@ export default function Table(info) {
       <Text style={styles.title}>Tabulka</Text>
       <View style={{display: 'flex', flexDirection: 'row', marginBottom: 10}}>
         <Text style={{color: 'white', marginLeft: 15, fontSize: 16}}>#</Text>
-        <Text style={{color: 'white', flex: 1, marginLeft: 15, fontSize: 16}}>Team</Text>
+        <Text style={{color: 'white', flex: 1, marginLeft: 55, fontSize: 16}}>Tým</Text>
         <Text style={{color: 'white', fontSize: 16, marginRight: 31}}>Z</Text>
-        <Text style={{color: 'white', fontSize: 16, marginRight: 23}}>P</Text>
+        <Text style={{color: 'white', fontSize: 16, marginRight: 23}}>B</Text>
       </View>
       <ScrollView>
         {team.map((tym, index) => (

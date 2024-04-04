@@ -43,7 +43,6 @@ export default function Matches(leagueId) {
 
       });
 
-      console.log(scrapedData)
       setMatches(scrapedData);
       setLoading(false);
       console.log('done');

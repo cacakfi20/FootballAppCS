@@ -30,7 +30,6 @@ const FootballMatch = ({ zapas, leagueId, nav }) => {
           skore_hoste: zapas.skore_hoste,
           link: zapas.link,
           leagueURL: leagueId.route.params.leagueURL,
-          nav: nav
         });
     }
     if (zapas.liga == leagueId.route.params.leagueId)
